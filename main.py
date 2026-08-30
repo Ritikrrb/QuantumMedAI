@@ -139,7 +139,15 @@ class PatientData(BaseModel):
 
 @app.get("/")
 def home():
-    return FileResponse("index.html")
+    from fastapi.responses import FileResponse
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+INDEX_FILE = BASE_DIR / "index.html"
+
+@app.get("/")
+def home():
+    return FileResponse(INDEX_FILE)
 
 @app.get("/api-status")
 def api_status():
