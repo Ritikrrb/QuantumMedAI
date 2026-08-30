@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>QuantumMedAI</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+header {
+    background: #111827;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+}
+
+h3 {
+    margin-top: 30px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 30px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.form-note {
+    text-align: center;
+    color: #666;
+    margin-top: 15px;
+}
+
+.section {
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+#pregnancySection {
+    display: none;
+}
+
+#result {
+    display: none;
+    margin-top: 30px;
+    padding: 30px;
+    border-radius: 15px;
+    background: #f8fbff;
+    border: 1px solid #dbeafe;
+}
+
+.result-title {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.assessment {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: #eef6ff;
+    margin-bottom: 25px;
+}
+
+.risk-text {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.confidence-box {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.confidence-value {
+    font-size: 38px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.probability-item {
+    margin: 18px 0;
+}
+
+.probability-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 18px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 10px;
+}
+
+.model-box {
+    background: #f3f4f6;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.input-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.input-item {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.disclaimer {
+    background: #fff7ed;
+    border-left: 5px solid #f59e0b;
+    padding: 15px;
+    margin-top: 25px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>⚕️ QuantumMedAI</h1>
+
+<p>Multi-Disease AI Prediction System</p>
+
+</header>
+
+
+
+<div class="container">
+
+<div class="card">
+
+
+<h2>Health Prediction</h2>
+
+
+<!-- DISEASE SELECTION -->
+
+<label for="disease">
+Select Disease
+</label>
+
+<select
+    id="disease"
+    onchange="createForm()"
+>
+
+<option value="">
+-- Select Disease --
+</option>
+
+<option value="diabetes">
+Diabetes
+</option>
+
+<option value="heart_disease">
+Heart Disease
+</option>
+
+<option value="breast_cancer">
+Breast Cancer
+</option>
+
+</select>
+
+
+<p
+    id="formNote"
+    class="form-note"
+>
+
+Select a disease to begin.
+
+</p>
+
+
+
+<!-- PATIENT INFORMATION -->
+
+<div
+    id="patientInfo"
+    style="display:none;"
+>
+
+<div class="section">
+
+<h3>Patient Information</h3>
+
+
+<label for="patientName">
+Full Name
+</label>
+
+<input
+    type="text"
+    id="patientName"
+    placeholder="Enter patient's full name"
+>
+
+
+<label for="patientAge">
+Age (Years)
+</label>
+
+<input
+    type="number"
+    id="patientAge"
+    placeholder="Enter age"
+>
+
+
+<label for="patientSex">
+Sex
+</label>
+
+<select
+    id="patientSex"
+    onchange="updatePregnancyField()"
+>
+
+<option value="">
+-- Select Sex --
+</option>
+
+<option value="male">
+Male
+</option>
+
+<option value="female">
+Female
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+
+<!-- DISEASE FORM -->
+
+<div id="patientForm"></div>
+
+
+
+<button onclick="predictDisease()">
+
+ANALYZE HEALTH DATA
+
+</button>
+
+
+
+<!-- RESULT -->
+
+<div id="result">
+
+<div id="resultContent"></div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<script>
+
+
+/* ========================================
+   DISEASE FIELDS
+======================================== */
+
+
+const diseaseFields = {
+
+
+/* ========================================
+   DIABETES
+======================================== */
+
+diabetes: [
+
+{
+    key: "Glucose",
+    label: "Glucose Level",
+    unit: "mg/dL"
+},
+
+{
+    key: "BloodPressure",
+    label: "Diastolic Blood Pressure",
+    unit: "mmHg"
+},
+
+{
+    key: "SkinThickness",
+    label: "Triceps Skin Fold Thickness",
+    unit: "mm"
+},
+
+{
+    key: "Insulin",
+    label: "2-Hour Serum Insulin",
+    unit: "µU/mL"
+},
+
+{
+    key: "BMI",
+    label: "Body Mass Index",
+    unit: "kg/m²"
+},
+
+{
+    key: "DiabetesPedigreeFunction",
+    label: "Diabetes Pedigree Function",
+    unit: "Score"
+}
+
+],
+
+
+
+/* ========================================
+   HEART DISEASE
+======================================== */
+
+heart_disease: [
+
+{
+    key: "cp",
+    label: "Chest Pain Type",
+    unit: "0 to 3"
+},
+
+{
+    key: "trestbps",
+    label: "Resting Blood Pressure",
+    unit: "mmHg"
+},
+
+{
+    key: "chol",
+    label: "Serum Cholesterol",
+    unit: "mg/dL"
+},
+
+{
+    key: "fbs",
+    label: "Fasting Blood Sugar",
+    unit: "0 = No, 1 = Yes"
+},
+
+{
+    key: "restecg",
+    label: "Resting ECG Result",
+    unit: "0 to 2"
+},
+
+{
+    key: "thalach",
+    label: "Maximum Heart Rate",
+    unit: "beats/min"
+},
+
+{
+    key: "exang",
+    label: "Exercise-Induced Angina",
+    unit: "0 = No, 1 = Yes"
+},
+
+{
+    key: "oldpeak",
+    label: "ST Depression",
+    unit: "ECG units"
+},
+
+{
+    key: "slope",
+    label: "ST Segment Slope",
+    unit: "0 to 2"
+},
+
+{
+    key: "ca",
+    label: "Number of Major Vessels",
+    unit: "0 to 3"
+},
+
+{
+    key: "thal",
+    label: "Thalassemia Test Result",
+    unit: "1 to 3"
+}
+
+],
+
+
+
+/* ========================================
+   BREAST CANCER
+======================================== */
+
+breast_cancer: [
+
+{ key: "mean radius", label: "Mean Radius", unit: "dataset unit" },
+{ key: "mean texture", label: "Mean Texture", unit: "dataset unit" },
+{ key: "mean perimeter", label: "Mean Perimeter", unit: "dataset unit" },
+{ key: "mean area", label: "Mean Area", unit: "dataset unit" },
+{ key: "mean smoothness", label: "Mean Smoothness", unit: "unitless" },
+{ key: "mean compactness", label: "Mean Compactness", unit: "unitless" },
+{ key: "mean concavity", label: "Mean Concavity", unit: "unitless" },
+{ key: "mean concave points", label: "Mean Concave Points", unit: "unitless" },
+{ key: "mean symmetry", label: "Mean Symmetry", unit: "unitless" },
+{ key: "mean fractal dimension", label: "Mean Fractal Dimension", unit: "unitless" },
+
+{ key: "radius error", label: "Radius Error", unit: "dataset unit" },
+{ key: "texture error", label: "Texture Error", unit: "dataset unit" },
+{ key: "perimeter error", label: "Perimeter Error", unit: "dataset unit" },
+{ key: "area error", label: "Area Error", unit: "dataset unit" },
+{ key: "smoothness error", label: "Smoothness Error", unit: "unitless" },
+{ key: "compactness error", label: "Compactness Error", unit: "unitless" },
+{ key: "concavity error", label: "Concavity Error", unit: "unitless" },
+{ key: "concave points error", label: "Concave Points Error", unit: "unitless" },
+{ key: "symmetry error", label: "Symmetry Error", unit: "unitless" },
+{ key: "fractal dimension error", label: "Fractal Dimension Error", unit: "unitless" },
+
+{ key: "worst radius", label: "Worst Radius", unit: "dataset unit" },
+{ key: "worst texture", label: "Worst Texture", unit: "dataset unit" },
+{ key: "worst perimeter", label: "Worst Perimeter", unit: "dataset unit" },
+{ key: "worst area", label: "Worst Area", unit: "dataset unit" },
+{ key: "worst smoothness", label: "Worst Smoothness", unit: "unitless" },
+{ key: "worst compactness", label: "Worst Compactness", unit: "unitless" },
+{ key: "worst concavity", label: "Worst Concavity", unit: "unitless" },
+{ key: "worst concave points", label: "Worst Concave Points", unit: "unitless" },
+{ key: "worst symmetry", label: "Worst Symmetry", unit: "unitless" },
+{ key: "worst fractal dimension", label: "Worst Fractal Dimension", unit: "unitless" }
+
+]
+
+};
+
+
+
+
+/* ========================================
+   CREATE FORM
+======================================== */
+
+
+function createForm() {
+
+
+    const disease =
+        document.getElementById(
+            "disease"
+        ).value;
+
+
+    const form =
+        document.getElementById(
+            "patientForm"
+        );
+
+
+    const patientInfo =
+        document.getElementById(
+            "patientInfo"
+        );
+
+
+    form.innerHTML = "";
+
+
+    document.getElementById(
+        "result"
+    ).style.display = "none";
+
+
+    if (!disease) {
+
+
+        patientInfo.style.display =
+            "none";
+
+
+        document.getElementById(
+            "formNote"
+        ).textContent =
+            "Select a disease to begin.";
+
+
+        return;
+
+    }
+
+
+    patientInfo.style.display =
+        "block";
+
+
+    document.getElementById(
+        "formNote"
+    ).textContent =
+        "Enter patient information and medical data below.";
+
+
+
+    /* DIABETES PREGNANCY FIELD */
+
+    if (disease === "diabetes") {
+
+
+        const pregnancySection =
+            document.createElement(
+                "div"
+            );
+
+
+        pregnancySection.id =
+            "pregnancySection";
+
+
+        pregnancySection.innerHTML = `
+
+            <label for="Pregnancies">
+
+            Number of Pregnancies
+
+            </label>
+
+            <input
+                type="number"
+                id="Pregnancies"
+                min="0"
+                step="1"
+                placeholder="Enter number of pregnancies"
+            >
+
+        `;
+
+
+        form.appendChild(
+            pregnancySection
+        );
+
+    }
+
+
+
+    /* DISEASE SPECIFIC FIELDS */
+
+    diseaseFields[disease].forEach(
+
+        function(field) {
+
+
+            const label =
+                document.createElement(
+                    "label"
+                );
+
+
+            label.textContent =
+                `${field.label} (${field.unit})`;
+
+
+            const input =
+                document.createElement(
+                    "input"
+                );
+
+
+            input.type =
+                "number";
+
+
+            input.step =
+                "any";
+
+
+            input.id =
+                field.key;
+
+
+            input.placeholder =
+                `Enter ${field.label}`;
+
+
+            label.appendChild(
+                input
+            );
+
+
+            form.appendChild(
+                label
+            );
+
+        }
+
+    );
+
+
+    updatePregnancyField();
+
+}
+
+
+
+
+/* ========================================
+   SHOW PREGNANCY ONLY FOR FEMALE
+======================================== */
+
+
+function updatePregnancyField() {
+
+
+    const disease =
+        document.getElementById(
+            "disease"
+        ).value;
+
+
+    const sex =
+        document.getElementById(
+            "patientSex"
+        ).value;
+
+
+    const pregnancySection =
+        document.getElementById(
+            "pregnancySection"
+        );
+
+
+    if (!pregnancySection) {
+
+        return;
+
+    }
+
+
+    if (
+
+        disease === "diabetes"
+
+        &&
+
+        sex === "female"
+
+    ) {
+
+
+        pregnancySection.style.display =
+            "block";
+
+    }
+
+
+    else {
+
+
+        pregnancySection.style.display =
+            "none";
+
+    }
+
+}
+
+
+
+
+/* ========================================
+   PREDICTION
+======================================== */
+
+
+async function predictDisease() {
+
+
+    const disease =
+        document.getElementById(
+            "disease"
+        ).value;
+
+
+    const name =
+        document.getElementById(
+            "patientName"
+        ).value;
+
+
+    const age =
+        document.getElementById(
+            "patientAge"
+        ).value;
+
+
+    const sex =
+        document.getElementById(
+            "patientSex"
+        ).value;
+
+
+
+    /* VALIDATION */
+
+    if (!disease) {
+
+        alert(
+            "Please select a disease."
+        );
+
+        return;
+
+    }
+
+
+    if (!name) {
+
+        alert(
+            "Please enter patient's name."
+        );
+
+        return;
+
+    }
+
+
+    if (!age) {
+
+        alert(
+            "Please enter age."
+        );
+
+        return;
+
+    }
+
+
+    if (!sex) {
+
+        alert(
+            "Please select sex."
+        );
+
+        return;
+
+    }
+
+
+
+    const patientData = {};
+
+
+
+    /* ========================================
+       DIABETES
+    ======================================== */
+
+    if (disease === "diabetes") {
+
+
+        if (sex === "female") {
+
+
+            const pregnancies =
+                document.getElementById(
+                    "Pregnancies"
+                ).value;
+
+
+            if (pregnancies === "") {
+
+
+                alert(
+                    "Please enter number of pregnancies."
+                );
+
+                return;
+
+            }
+
+
+            patientData.Pregnancies =
+                Number(pregnancies);
+
+        }
+
+
+        else {
+
+
+            patientData.Pregnancies =
+                0;
+
+        }
+
+
+        patientData.Age =
+            Number(age);
+
+    }
+
+
+
+    /* ========================================
+       HEART DISEASE
+    ======================================== */
+
+    if (disease === "heart_disease") {
+
+
+        patientData.age =
+            Number(age);
+
+
+        patientData.sex =
+            sex === "male"
+                ? 1
+                : 0;
+
+    }
+
+
+
+    /*
+       BREAST CANCER
+
+       Name, age and sex are collected
+       for patient information only.
+
+       Your current breast cancer model
+       uses the 30 trained tumor features.
+    */
+
+
+
+    /* ========================================
+       COLLECT MEDICAL DATA
+    ======================================== */
+
+    for (
+
+        const field
+
+        of
+
+        diseaseFields[disease]
+
+    ) {
+
+
+        const value =
+            document.getElementById(
+                field.key
+            ).value;
+
+
+        if (value === "") {
+
+
+            alert(
+                "Please enter " +
+                field.label
+            );
+
+            return;
+
+        }
+
+
+        patientData[
+            field.key
+        ] =
+            Number(value);
+
+    }
+
+
+
+    /* ========================================
+       SEND TO FASTAPI
+    ======================================== */
+
+    try {
+
+
+        const response =
+            await fetch(
+
+                `http://127.0.0.1:8000/predict-disease/${disease}`,
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            patientData
+                        )
+
+                }
+
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+
+            alert(
+
+                result.detail ||
+
+                "Prediction failed."
+
+            );
+
+
+            return;
+
+        }
+
+
+
+        /* DISPLAY RESULT */
+
+        displayResult(
+
+            disease,
+
+            result,
+
+            {
+
+                name: name,
+
+                age: age,
+
+                sex: sex
+
+            },
+
+            patientData
+
+        );
+
+
+    }
+
+
+    catch (error) {
+
+
+        alert(
+            "Cannot connect to QuantumMedAI backend."
+        );
+
+
+    }
+
+}
+
+
+
+
+/* ========================================
+   DISPLAY RESULT
+======================================== */
+
+
+function displayResult(
+
+    disease,
+
+    result,
+
+    patientInfo,
+
+    patientData
+
+) {
+
+
+    let class0Label;
+    let class1Label;
+    let modelName;
+
+
+
+    /* ========================================
+       DIABETES
+    ======================================== */
+
+    if (disease === "diabetes") {
+
+
+        class0Label =
+            "No Diabetes Pattern Detected";
+
+
+        class1Label =
+            "Diabetes Pattern Detected";
+
+
+        modelName =
+            "Random Forest";
+
+    }
+
+
+
+    /* ========================================
+       HEART DISEASE
+    ======================================== */
+
+    else if (
+
+        disease === "heart_disease"
+
+    ) {
+
+
+        class0Label =
+            "No Heart Disease Pattern Detected";
+
+
+        class1Label =
+            "Heart Disease Pattern Detected";
+
+
+        modelName =
+            "Random Forest";
+
+    }
+
+
+
+    /* ========================================
+       BREAST CANCER
+    ======================================== */
+
+    else {
+
+
+        class0Label =
+            "Malignant Pattern Detected";
+
+
+        class1Label =
+            "Benign Pattern Detected";
+
+
+        modelName =
+            "SVM";
+
+    }
+
+
+
+    /* ========================================
+       PREDICTION
+    ======================================== */
+
+
+    const prediction =
+        result.prediction;
+
+
+    const assessment =
+
+        prediction === 0
+
+            ? class0Label
+
+            : class1Label;
+
+
+
+    const probabilities =
+        result.probabilities;
+
+
+    const probability0 =
+
+        probabilities
+
+            ? probabilities[0]
+
+            : null;
+
+
+    const probability1 =
+
+        probabilities
+
+            ? probabilities[1]
+
+            : null;
+
+
+
+    let confidence =
+        "Not available";
+
+
+    if (probability0 !== null) {
+
+
+        confidence =
+
+            prediction === 0
+
+                ? probability0 + "%"
+
+                : probability1 + "%";
+
+    }
+
+
+
+    /* ========================================
+       PROBABILITY DISPLAY
+    ======================================== */
+
+
+    let probabilityHTML =
+        "";
+
+
+    if (probability0 !== null) {
+
+
+        probabilityHTML = `
+
+
+        <div class="section">
+
+        <h3>
+        Model Probability Distribution
+        </h3>
+
+
+        <div class="probability-item">
+
+        <div class="probability-header">
+
+        <span>
+
+        ${class0Label}
+
+        </span>
+
+
+        <span>
+
+        ${probability0}%
+
+        </span>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            style="width:${probability0}%"
+        ></div>
+
+        </div>
+
+        </div>
+
+
+
+        <div class="probability-item">
+
+        <div class="probability-header">
+
+        <span>
+
+        ${class1Label}
+
+        </span>
+
+
+        <span>
+
+        ${probability1}%
+
+        </span>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            style="width:${probability1}%"
+        ></div>
+
+        </div>
+
+        </div>
+
+        </div>
+
+        `;
+
+    }
+
+
+
+    /* ========================================
+       INPUT SUMMARY
+    ======================================== */
+
+
+    let inputHTML =
+        "";
+
+
+    for (
+
+        const [field, value]
+
+        of
+
+        Object.entries(
+            patientData
+        )
+
+    ) {
+
+
+        inputHTML += `
+
+
+        <div class="input-item">
+
+        <strong>
+
+        ${field}
+
+        </strong>
+
+        <br><br>
+
+        ${value}
+
+        </div>
+
+        `;
+
+    }
+
+
+
+    /* ========================================
+       SEX FORMAT
+    ======================================== */
+
+
+    const formattedSex =
+
+        patientInfo.sex
+            .charAt(0)
+            .toUpperCase()
+
+        +
+
+        patientInfo.sex
+            .slice(1);
+
+
+
+    /* ========================================
+       FINAL RESULT
+    ======================================== */
+
+
+    document.getElementById(
+        "resultContent"
+    ).innerHTML = `
+
+
+    <div class="result-title">
+
+    <h2>
+    🩺 AI PREDICTION RESULT
+    </h2>
+
+    </div>
+
+
+
+    <div class="section">
+
+    <h3>
+    Patient Information
+    </h3>
+
+
+    <div class="input-summary">
+
+
+    <div class="input-item">
+
+    <strong>
+    Name
+    </strong>
+
+    <br>
+
+    ${patientInfo.name}
+
+    </div>
+
+
+
+    <div class="input-item">
+
+    <strong>
+    Age
+    </strong>
+
+    <br>
+
+    ${patientInfo.age} Years
+
+    </div>
+
+
+
+    <div class="input-item">
+
+    <strong>
+    Sex
+    </strong>
+
+    <br>
+
+    ${formattedSex}
+
+    </div>
+
+
+
+    <div class="input-item">
+
+    <strong>
+    Disease Analyzed
+    </strong>
+
+    <br>
+
+    ${result.disease}
+
+    </div>
+
+
+    </div>
+
+    </div>
+
+
+
+    <div class="assessment">
+
+    <h3>
+    Overall Model Prediction
+    </h3>
+
+
+    <div class="risk-text">
+
+    ${assessment}
+
+    </div>
+
+    </div>
+
+
+
+    <div class="confidence-box">
+
+    <h3>
+    Confidence in Predicted Class
+    </h3>
+
+
+    <div class="confidence-value">
+
+    ${confidence}
+
+    </div>
+
+    </div>
+
+
+
+    ${probabilityHTML}
+
+
+
+    <div class="section">
+
+    <h3>
+    AI Model Used
+    </h3>
+
+
+    <div class="model-box">
+
+    <strong>
+
+    ${modelName}
+
+    </strong>
+
+    <br><br>
+
+    Prediction Class:
+
+    ${prediction}
+
+    </div>
+
+    </div>
+
+
+
+    <div class="section">
+
+    <h3>
+    Input Data Used for AI Analysis
+    </h3>
+
+
+    <div class="input-summary">
+
+    ${inputHTML}
+
+    </div>
+
+    </div>
+
+
+
+    <div class="disclaimer">
+
+    <strong>
+    ⚠ Important Disclaimer
+    </strong>
+
+    <br><br>
+
+    This AI-generated result is intended
+    for educational and decision-support
+    purposes only.
+
+    It is not a medical diagnosis and
+    should not replace consultation with
+    a qualified healthcare professional.
+
+    </div>
+
+
+    `;
+
+
+
+    document.getElementById(
+        "result"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "result"
+    ).scrollIntoView({
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
