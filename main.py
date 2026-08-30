@@ -44,8 +44,7 @@ allow_headers=["*"],
 # FRONTEND FILE
 
 # ============================================================
-
-BASE_DIR = Path(**file**).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent
 INDEX_FILE = BASE_DIR / "index.html"
 
 # ============================================================
