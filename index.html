@@ -1494,16 +1494,12 @@ function createForm() {
         pregnancySection.innerHTML = `
 
         <h3 class="section-title">
-
         Medical Information
-
         </h3>
 
 
         <label>
-
         Number of Pregnancies
-
         </label>
 
 
@@ -1524,159 +1520,228 @@ function createForm() {
     }
 
 
-    else {
+  else {
 
-        const title =
-            document.createElement("h3");
+    const title =
+        document.createElement("h3");
+
+    title.className =
+        "section-title";
+
+    title.textContent =
+        "Medical Information";
+
+    form.appendChild(
+        title
+    );
 
 
-        title.className =
-            "section-title";
+    /* ========================================
+       BREAST CANCER TEST SAMPLE BUTTON
+    ======================================== */
+
+    if (
+        currentDisease ===
+        "breast_cancer"
+    ) {
+
+        const sampleButton =
+            document.createElement("button");
+
+        sampleButton.type =
+            "button";
+
+        sampleButton.className =
+            "primary-button";
+
+        sampleButton.style.marginTop =
+            "20px";
+
+        sampleButton.textContent =
+            "🧪 LOAD TEST SAMPLE";
+
+        sampleButton.onclick =
+            loadBreastCancerSample;
+
+        form.appendChild(
+            sampleButton
+        );
+
+    }
+
+}
+
+    /* ========================================
+       BREAST CANCER TEST SAMPLE BUTTON
+    ======================================== */
+
+    if (
+        currentDisease ===
+        "breast_cancer"
+    ) {
+
+        const sampleButton =
+            document.createElement("button");
 
 
-        title.textContent =
-            "Medical Information";
+        sampleButton.type =
+            "button";
 
 
-        form.appendChild(title);
+        sampleButton.className =
+            "primary-button";
+
+
+        sampleButton.style.marginTop =
+            "20px";
+
+
+        sampleButton.textContent =
+            "🧪 LOAD TEST SAMPLE";
+
+
+        sampleButton.onclick =
+            loadBreastCancerSample;
+
+
+        form.appendChild(
+            sampleButton
+        );
 
     }
 
 
-    let currentGroup = null;
+    let currentGroup =
+        null;
 
-    let groupDiv = null;
+
+    let groupDiv =
+        null;
 
 
     diseaseFields[
         currentDisease
-    ].forEach(function(field) {
-
-
-        if (
-            currentDisease ===
-            "breast_cancer"
-        ) {
+    ].forEach(
+        function(field) {
 
 
             if (
-                field.group !==
-                currentGroup
+                currentDisease ===
+                "breast_cancer"
             ) {
 
 
-                currentGroup =
-                    field.group;
+                if (
+                    field.group !==
+                    currentGroup
+                ) {
 
 
-                groupDiv =
-                    document.createElement(
-                        "div"
+                    currentGroup =
+                        field.group;
+
+
+                    groupDiv =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    groupDiv.className =
+                        "feature-group";
+
+
+                    groupDiv.innerHTML =
+                        `<h3>${currentGroup}</h3>`;
+
+
+                    form.appendChild(
+                        groupDiv
                     );
 
+                }
 
-                groupDiv.className =
-                    "feature-group";
+            }
 
 
-                groupDiv.innerHTML =
-                    `<h3>${currentGroup}</h3>`;
+            const container =
+                document.createElement(
+                    "div"
+                );
 
+
+            const label =
+                document.createElement(
+                    "label"
+                );
+
+
+            label.textContent =
+                field.unit
+                ?
+                `${field.label} (${field.unit})`
+                :
+                field.label;
+
+
+            const input =
+                document.createElement(
+                    "input"
+                );
+
+
+            input.type =
+                "number";
+
+
+            input.step =
+                "any";
+
+
+            input.id =
+                field.key;
+
+
+            input.placeholder =
+                `Enter ${field.label}`;
+
+
+            container.appendChild(
+                label
+            );
+
+
+            container.appendChild(
+                input
+            );
+
+
+            if (
+                currentDisease ===
+                "breast_cancer"
+            ) {
+
+                groupDiv.appendChild(
+                    container
+                );
+
+            }
+
+            else {
 
                 form.appendChild(
-                    groupDiv
+                    container
                 );
 
             }
 
         }
-
-
-        const container =
-            document.createElement(
-                "div"
-            );
-
-
-        const label =
-            document.createElement(
-                "label"
-            );
-
-
-        label.textContent =
-
-            field.unit
-
-            ?
-
-            `${field.label} (${field.unit})`
-
-            :
-
-            field.label;
-
-
-        const input =
-            document.createElement(
-                "input"
-            );
-
-
-        input.type =
-            "number";
-
-
-        input.step =
-            "any";
-
-
-        input.id =
-            field.key;
-
-
-        input.placeholder =
-            `Enter ${field.label}`;
-
-
-        container.appendChild(
-            label
-        );
-
-
-        container.appendChild(
-            input
-        );
-
-
-        if (
-            currentDisease ===
-            "breast_cancer"
-        ) {
-
-
-            groupDiv.appendChild(
-                container
-            );
-
-        }
-
-        else {
-
-
-            form.appendChild(
-                container
-            );
-
-        }
-
-    });
+    );
 
 
     updatePregnancyField();
 
 }
-
 
 
 /* ========================================
@@ -1847,7 +1912,78 @@ function completeLoading() {
 }
 
 
+/* ========================================
+   LOAD BREAST CANCER TEST SAMPLE
+======================================== */
 
+async function loadBreastCancerSample() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/breast-cancer/test-sample`
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load test sample."
+            );
+
+        }
+
+        const sample =
+            await response.json();
+
+
+        if (
+            !sample.features ||
+            sample.features.length !== 30
+        ) {
+
+            throw new Error(
+                "Invalid test sample received."
+            );
+
+        }
+
+
+        sample.feature_names.forEach(
+            function(fieldName, index) {
+
+                const input =
+                    document.getElementById(
+                        fieldName
+                    );
+
+                if (input) {
+
+                    input.value =
+                        sample.features[index];
+
+                }
+
+            }
+        );
+
+
+        alert(
+            "Breast cancer test sample loaded successfully."
+        );
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Could not load test sample:\n\n" +
+            error.message
+        );
+
+    }
+
+}
 /* ========================================
    PREDICTION
 ======================================== */
