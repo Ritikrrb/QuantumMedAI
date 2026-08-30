@@ -56,6 +56,7 @@ header p {
 
 button {
     font-family: inherit;
+    cursor: pointer;
 }
 
 
@@ -119,7 +120,6 @@ button {
     border: none;
     padding: 12px 25px;
     border-radius: 8px;
-    cursor: pointer;
     font-size: 15px;
 }
 
@@ -145,7 +145,6 @@ button {
     border: none;
     padding: 10px 18px;
     border-radius: 8px;
-    cursor: pointer;
     margin-bottom: 20px;
 }
 
@@ -194,7 +193,6 @@ button {
     border: none;
     border-radius: 8px;
     font-size: 16px;
-    cursor: pointer;
 }
 
 
@@ -226,6 +224,37 @@ select {
 
 #pregnancySection {
     display: none;
+}
+
+
+/* ========================================
+   BREAST CANCER FEATURE GROUPS
+======================================== */
+
+.feature-group {
+    margin-top: 25px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.feature-group h3 {
+    margin-top: 0;
+}
+
+
+/* ========================================
+   TEST SAMPLE BUTTON
+======================================== */
+
+.test-sample-button {
+    margin-top: 15px;
+    background: #0f766e;
+}
+
+.test-sample-button:hover {
+    background: #0d665f;
 }
 
 
@@ -279,6 +308,7 @@ select {
 .progress-fill {
     height: 100%;
     background: #2563eb;
+    transition: width 0.4s ease;
 }
 
 .input-summary {
@@ -308,23 +338,6 @@ select {
     border-radius: 8px;
     margin-top: 25px;
     line-height: 1.5;
-}
-
-
-/* ========================================
-   BREAST CANCER
-======================================== */
-
-.feature-group {
-    margin-top: 25px;
-    padding: 20px;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-}
-
-.feature-group h3 {
-    margin-top: 0;
 }
 
 
@@ -396,6 +409,16 @@ select {
 .loading-step-complete {
     color: #16a34a;
     font-weight: bold;
+}
+
+
+/* ========================================
+   DISABLED BUTTON
+======================================== */
+
+button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
 
@@ -474,11 +497,13 @@ type="button"
 
 >
 
-Analyze Diabetes </button>
+Analyze Diabetes
+
+</button>
 
 </div>
 
-<!-- HEART -->
+<!-- HEART DISEASE -->
 
 <div
     class="disease-card"
@@ -501,7 +526,9 @@ type="button"
 
 >
 
-Analyze Heart Health </button>
+Analyze Heart Health
+
+</button>
 
 </div>
 
@@ -528,7 +555,9 @@ type="button"
 
 >
 
-Analyze Data </button>
+Analyze Data
+
+</button>
 
 </div>
 
@@ -555,7 +584,9 @@ type="button"
 
 >
 
-View History </button>
+View History
+
+</button>
 
 </div>
 
@@ -906,22 +937,23 @@ const diseaseInfo = {
 
         icon: "🩸",
 
-        name: "Diabetes Analysis",
+        name:
+            "Diabetes Analysis",
 
         description:
-        "This module uses patient health parameters to estimate patterns associated with the diabetes classes used by the trained model.",
+            "This module uses patient health parameters to estimate patterns associated with the diabetes classes used by the trained model.",
 
         model:
-        "Random Forest",
+            "Random Forest",
 
         accuracy:
-        "87.01%",
+            "87.01%",
 
         features:
-        "8",
+            "8",
 
         samples:
-        "768"
+            "768"
 
     },
 
@@ -930,22 +962,23 @@ const diseaseInfo = {
 
         icon: "❤️",
 
-        name: "Heart Disease Analysis",
+        name:
+            "Heart Disease Analysis",
 
         description:
-        "This module analyzes cardiovascular measurements using the trained Heart Disease AI model.",
+            "This module analyzes cardiovascular measurements using the trained Heart Disease AI model.",
 
         model:
-        "Random Forest",
+            "Random Forest",
 
         accuracy:
-        "90.16%",
+            "90.16%",
 
         features:
-        "13",
+            "13",
 
         samples:
-        "303"
+            "303"
 
     },
 
@@ -954,22 +987,23 @@ const diseaseInfo = {
 
         icon: "🧬",
 
-        name: "Breast Cancer Analysis",
+        name:
+            "Breast Cancer Analysis",
 
         description:
-        "This module analyzes 30 tumor measurement features using a trained Support Vector Machine model.",
+            "This module analyzes 30 tumor measurement features using the trained Support Vector Machine model.",
 
         model:
-        "Support Vector Machine",
+            "Support Vector Machine",
 
         accuracy:
-        "96.49%",
+            "96.49%",
 
         features:
-        "30",
+            "30",
 
         samples:
-        "569"
+            "569"
 
     }
 
@@ -986,39 +1020,74 @@ const diseaseFields = {
     diabetes: [
 
         {
-            key: "Glucose",
-            label: "Glucose Level",
-            unit: "mg/dL"
+            key:
+                "Glucose",
+
+            label:
+                "Glucose Level",
+
+            unit:
+                "mg/dL"
         },
 
-        {
-            key: "BloodPressure",
-            label: "Diastolic Blood Pressure",
-            unit: "mmHg"
-        },
 
         {
-            key: "SkinThickness",
-            label: "Triceps Skin Fold Thickness",
-            unit: "mm"
+            key:
+                "BloodPressure",
+
+            label:
+                "Diastolic Blood Pressure",
+
+            unit:
+                "mmHg"
         },
 
-        {
-            key: "Insulin",
-            label: "2-Hour Serum Insulin",
-            unit: "µU/mL"
-        },
 
         {
-            key: "BMI",
-            label: "Body Mass Index",
-            unit: "kg/m²"
+            key:
+                "SkinThickness",
+
+            label:
+                "Triceps Skin Fold Thickness",
+
+            unit:
+                "mm"
         },
 
+
         {
-            key: "DiabetesPedigreeFunction",
-            label: "Diabetes Pedigree Function",
-            unit: "Score"
+            key:
+                "Insulin",
+
+            label:
+                "2-Hour Serum Insulin",
+
+            unit:
+                "µU/mL"
+        },
+
+
+        {
+            key:
+                "BMI",
+
+            label:
+                "Body Mass Index",
+
+            unit:
+                "kg/m²"
+        },
+
+
+        {
+            key:
+                "DiabetesPedigreeFunction",
+
+            label:
+                "Diabetes Pedigree Function",
+
+            unit:
+                "Score"
         }
 
     ],
@@ -1027,69 +1096,134 @@ const diseaseFields = {
     heart_disease: [
 
         {
-            key: "cp",
-            label: "Chest Pain Type",
-            unit: "0 to 3"
+            key:
+                "cp",
+
+            label:
+                "Chest Pain Type",
+
+            unit:
+                "0 to 3"
         },
 
-        {
-            key: "trestbps",
-            label: "Resting Blood Pressure",
-            unit: "mmHg"
-        },
 
         {
-            key: "chol",
-            label: "Serum Cholesterol",
-            unit: "mg/dL"
+            key:
+                "trestbps",
+
+            label:
+                "Resting Blood Pressure",
+
+            unit:
+                "mmHg"
         },
 
-        {
-            key: "fbs",
-            label: "Fasting Blood Sugar",
-            unit: "0 = No, 1 = Yes"
-        },
 
         {
-            key: "restecg",
-            label: "Resting ECG Result",
-            unit: "0 to 2"
+            key:
+                "chol",
+
+            label:
+                "Serum Cholesterol",
+
+            unit:
+                "mg/dL"
         },
 
-        {
-            key: "thalach",
-            label: "Maximum Heart Rate",
-            unit: "beats/min"
-        },
 
         {
-            key: "exang",
-            label: "Exercise-Induced Angina",
-            unit: "0 = No, 1 = Yes"
+            key:
+                "fbs",
+
+            label:
+                "Fasting Blood Sugar",
+
+            unit:
+                "0 = No, 1 = Yes"
         },
 
-        {
-            key: "oldpeak",
-            label: "ST Depression",
-            unit: "ECG units"
-        },
 
         {
-            key: "slope",
-            label: "ST Segment Slope",
-            unit: "0 to 2"
+            key:
+                "restecg",
+
+            label:
+                "Resting ECG Result",
+
+            unit:
+                "0 to 2"
         },
 
-        {
-            key: "ca",
-            label: "Number of Major Vessels",
-            unit: "0 to 3"
-        },
 
         {
-            key: "thal",
-            label: "Thalassemia Test Result",
-            unit: "1 to 3"
+            key:
+                "thalach",
+
+            label:
+                "Maximum Heart Rate",
+
+            unit:
+                "beats/min"
+        },
+
+
+        {
+            key:
+                "exang",
+
+            label:
+                "Exercise-Induced Angina",
+
+            unit:
+                "0 = No, 1 = Yes"
+        },
+
+
+        {
+            key:
+                "oldpeak",
+
+            label:
+                "ST Depression",
+
+            unit:
+                "ECG units"
+        },
+
+
+        {
+            key:
+                "slope",
+
+            label:
+                "ST Segment Slope",
+
+            unit:
+                "0 to 2"
+        },
+
+
+        {
+            key:
+                "ca",
+
+            label:
+                "Number of Major Vessels",
+
+            unit:
+                "0 to 3"
+        },
+
+
+        {
+            key:
+                "thal",
+
+            label:
+                "Thalassemia Test Result",
+
+            unit:
+                "1 to 3"
         }
 
     ],
@@ -1098,185 +1232,185 @@ const diseaseFields = {
     breast_cancer: [
 
         {
-            key: "mean radius",
-            label: "Mean Radius",
-            group: "Mean Measurements"
+            key:"mean radius",
+            label:"Mean Radius",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean texture",
-            label: "Mean Texture",
-            group: "Mean Measurements"
+            key:"mean texture",
+            label:"Mean Texture",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean perimeter",
-            label: "Mean Perimeter",
-            group: "Mean Measurements"
+            key:"mean perimeter",
+            label:"Mean Perimeter",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean area",
-            label: "Mean Area",
-            group: "Mean Measurements"
+            key:"mean area",
+            label:"Mean Area",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean smoothness",
-            label: "Mean Smoothness",
-            group: "Mean Measurements"
+            key:"mean smoothness",
+            label:"Mean Smoothness",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean compactness",
-            label: "Mean Compactness",
-            group: "Mean Measurements"
+            key:"mean compactness",
+            label:"Mean Compactness",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean concavity",
-            label: "Mean Concavity",
-            group: "Mean Measurements"
+            key:"mean concavity",
+            label:"Mean Concavity",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean concave points",
-            label: "Mean Concave Points",
-            group: "Mean Measurements"
+            key:"mean concave points",
+            label:"Mean Concave Points",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean symmetry",
-            label: "Mean Symmetry",
-            group: "Mean Measurements"
+            key:"mean symmetry",
+            label:"Mean Symmetry",
+            group:"Mean Measurements"
         },
 
         {
-            key: "mean fractal dimension",
-            label: "Mean Fractal Dimension",
-            group: "Mean Measurements"
-        },
-
-
-        {
-            key: "radius error",
-            label: "Radius Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "texture error",
-            label: "Texture Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "perimeter error",
-            label: "Perimeter Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "area error",
-            label: "Area Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "smoothness error",
-            label: "Smoothness Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "compactness error",
-            label: "Compactness Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "concavity error",
-            label: "Concavity Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "concave points error",
-            label: "Concave Points Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "symmetry error",
-            label: "Symmetry Error",
-            group: "Error Measurements"
-        },
-
-        {
-            key: "fractal dimension error",
-            label: "Fractal Dimension Error",
-            group: "Error Measurements"
+            key:"mean fractal dimension",
+            label:"Mean Fractal Dimension",
+            group:"Mean Measurements"
         },
 
 
         {
-            key: "worst radius",
-            label: "Worst Radius",
-            group: "Worst Measurements"
+            key:"radius error",
+            label:"Radius Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst texture",
-            label: "Worst Texture",
-            group: "Worst Measurements"
+            key:"texture error",
+            label:"Texture Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst perimeter",
-            label: "Worst Perimeter",
-            group: "Worst Measurements"
+            key:"perimeter error",
+            label:"Perimeter Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst area",
-            label: "Worst Area",
-            group: "Worst Measurements"
+            key:"area error",
+            label:"Area Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst smoothness",
-            label: "Worst Smoothness",
-            group: "Worst Measurements"
+            key:"smoothness error",
+            label:"Smoothness Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst compactness",
-            label: "Worst Compactness",
-            group: "Worst Measurements"
+            key:"compactness error",
+            label:"Compactness Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst concavity",
-            label: "Worst Concavity",
-            group: "Worst Measurements"
+            key:"concavity error",
+            label:"Concavity Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst concave points",
-            label: "Worst Concave Points",
-            group: "Worst Measurements"
+            key:"concave points error",
+            label:"Concave Points Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst symmetry",
-            label: "Worst Symmetry",
-            group: "Worst Measurements"
+            key:"symmetry error",
+            label:"Symmetry Error",
+            group:"Error Measurements"
         },
 
         {
-            key: "worst fractal dimension",
-            label: "Worst Fractal Dimension",
-            group: "Worst Measurements"
+            key:"fractal dimension error",
+            label:"Fractal Dimension Error",
+            group:"Error Measurements"
+        },
+
+
+        {
+            key:"worst radius",
+            label:"Worst Radius",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst texture",
+            label:"Worst Texture",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst perimeter",
+            label:"Worst Perimeter",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst area",
+            label:"Worst Area",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst smoothness",
+            label:"Worst Smoothness",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst compactness",
+            label:"Worst Compactness",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst concavity",
+            label:"Worst Concavity",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst concave points",
+            label:"Worst Concave Points",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst symmetry",
+            label:"Worst Symmetry",
+            group:"Worst Measurements"
+        },
+
+        {
+            key:"worst fractal dimension",
+            label:"Worst Fractal Dimension",
+            group:"Worst Measurements"
         }
 
     ]
@@ -1294,26 +1428,21 @@ function hideAllPages() {
         "homePage"
     ).classList.add("hidden");
 
-
     document.getElementById(
         "historyPage"
     ).classList.add("hidden");
-
 
     document.getElementById(
         "infoPage"
     ).classList.add("hidden");
 
-
     document.getElementById(
         "formPage"
     ).classList.add("hidden");
 
-
     document.getElementById(
         "resultPage"
     ).classList.add("hidden");
-
 
     document.getElementById(
         "loadingPage"
@@ -1322,16 +1451,19 @@ function hideAllPages() {
 }
 
 
+/* ========================================
+   HOME
+======================================== */
 
 function showHome() {
 
     hideAllPages();
 
-
     document.getElementById(
         "homePage"
-    ).classList.remove("hidden");
-
+    ).classList.remove(
+        "hidden"
+    );
 
     window.scrollTo({
 
@@ -1344,14 +1476,16 @@ function showHome() {
 }
 
 
-
 /* ========================================
    DISEASE INFORMATION
 ======================================== */
 
-function showDiseaseInfo(disease) {
+function showDiseaseInfo(
+    disease
+) {
 
-    currentDisease = disease;
+    currentDisease =
+        disease;
 
 
     hideAllPages();
@@ -1359,11 +1493,15 @@ function showDiseaseInfo(disease) {
 
     document.getElementById(
         "infoPage"
-    ).classList.remove("hidden");
+    ).classList.remove(
+        "hidden"
+    );
 
 
     const info =
-        diseaseInfo[disease];
+        diseaseInfo[
+            disease
+        ];
 
 
     document.getElementById(
@@ -1436,7 +1574,6 @@ function showDiseaseInfo(disease) {
 }
 
 
-
 /* ========================================
    START ANALYSIS
 ======================================== */
@@ -1448,19 +1585,22 @@ function startAnalysis() {
 
     document.getElementById(
         "formPage"
-    ).classList.remove("hidden");
+    ).classList.remove(
+        "hidden"
+    );
 
 
     document.getElementById(
         "formTitle"
     ).textContent =
-        diseaseInfo[currentDisease].name;
+        diseaseInfo[
+            currentDisease
+        ].name;
 
 
     createForm();
 
 }
-
 
 
 /* ========================================
@@ -1484,7 +1624,9 @@ function createForm() {
     ) {
 
         const pregnancySection =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         pregnancySection.id =
@@ -1520,59 +1662,31 @@ function createForm() {
     }
 
 
-  else {
+    else {
 
-    const title =
-        document.createElement("h3");
-
-    title.className =
-        "section-title";
-
-    title.textContent =
-        "Medical Information";
-
-    form.appendChild(
-        title
-    );
+        const title =
+            document.createElement(
+                "h3"
+            );
 
 
-    /* ========================================
-       BREAST CANCER TEST SAMPLE BUTTON
-    ======================================== */
+        title.className =
+            "section-title";
 
-    if (
-        currentDisease ===
-        "breast_cancer"
-    ) {
 
-        const sampleButton =
-            document.createElement("button");
+        title.textContent =
+            "Medical Information";
 
-        sampleButton.type =
-            "button";
-
-        sampleButton.className =
-            "primary-button";
-
-        sampleButton.style.marginTop =
-            "20px";
-
-        sampleButton.textContent =
-            "🧪 LOAD TEST SAMPLE";
-
-        sampleButton.onclick =
-            loadBreastCancerSample;
 
         form.appendChild(
-            sampleButton
+            title
         );
 
     }
 
-}
 
     /* ========================================
-       BREAST CANCER TEST SAMPLE BUTTON
+       BREAST CANCER TEST BUTTON
     ======================================== */
 
     if (
@@ -1581,7 +1695,9 @@ function createForm() {
     ) {
 
         const sampleButton =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
 
         sampleButton.type =
@@ -1589,11 +1705,7 @@ function createForm() {
 
 
         sampleButton.className =
-            "primary-button";
-
-
-        sampleButton.style.marginTop =
-            "20px";
+            "primary-button test-sample-button";
 
 
         sampleButton.textContent =
@@ -1622,8 +1734,11 @@ function createForm() {
     diseaseFields[
         currentDisease
     ].forEach(
+
         function(field) {
 
+
+            /* BREAST CANCER GROUP */
 
             if (
                 currentDisease ===
@@ -1677,10 +1792,15 @@ function createForm() {
 
 
             label.textContent =
+
                 field.unit
+
                 ?
+
                 `${field.label} (${field.unit})`
+
                 :
+
                 field.label;
 
 
@@ -1721,6 +1841,7 @@ function createForm() {
                 "breast_cancer"
             ) {
 
+
                 groupDiv.appendChild(
                     container
                 );
@@ -1729,6 +1850,7 @@ function createForm() {
 
             else {
 
+
                 form.appendChild(
                     container
                 );
@@ -1736,6 +1858,7 @@ function createForm() {
             }
 
         }
+
     );
 
 
@@ -1784,6 +1907,102 @@ function updatePregnancyField() {
 }
 
 
+/* ========================================
+   LOAD BREAST CANCER TEST SAMPLE
+======================================== */
+
+async function loadBreastCancerSample() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/breast-cancer/test-sample`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Server returned ${response.status}`
+            );
+
+        }
+
+
+        const sample =
+            await response.json();
+
+
+        if (
+            !sample.features ||
+            sample.features.length !== 30
+        ) {
+
+            throw new Error(
+                "The server did not return exactly 30 features."
+            );
+
+        }
+
+
+        if (
+            !sample.feature_names ||
+            sample.feature_names.length !== 30
+        ) {
+
+            throw new Error(
+                "The server did not return the 30 feature names."
+            );
+
+        }
+
+
+        sample.feature_names.forEach(
+
+            function(
+                fieldName,
+                index
+            ) {
+
+                const input =
+                    document.getElementById(
+                        fieldName
+                    );
+
+
+                if (input) {
+
+                    input.value =
+                        sample.features[
+                            index
+                        ];
+
+                }
+
+            }
+
+        );
+
+
+        alert(
+            "Breast cancer test sample loaded successfully."
+        );
+
+    }
+
+
+    catch (error) {
+
+        alert(
+            "Could not load breast cancer test sample.\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
 
 /* ========================================
    AI LOADING
@@ -1831,63 +2050,74 @@ function showLoading() {
         "";
 
 
-    setTimeout(function() {
+    setTimeout(
 
-        document.getElementById(
-            "loadingProgressBar"
-        ).style.width =
-            "50%";
+        function() {
 
-
-        document.getElementById(
-            "loadingText"
-        ).textContent =
-            "Running trained AI model...";
+            document.getElementById(
+                "loadingProgressBar"
+            ).style.width =
+                "50%";
 
 
-        document.getElementById(
-            "step1"
-        ).className =
-            "loading-step-complete";
+            document.getElementById(
+                "loadingText"
+            ).textContent =
+                "Running trained AI model...";
 
 
-        document.getElementById(
-            "step2"
-        ).className =
-            "loading-step-active";
-
-    }, 500);
+            document.getElementById(
+                "step1"
+            ).className =
+                "loading-step-complete";
 
 
-    setTimeout(function() {
+            document.getElementById(
+                "step2"
+            ).className =
+                "loading-step-active";
 
-        document.getElementById(
-            "loadingProgressBar"
-        ).style.width =
-            "80%";
+        },
 
+        500
 
-        document.getElementById(
-            "loadingText"
-        ).textContent =
-            "Generating prediction result...";
+    );
 
 
-        document.getElementById(
-            "step2"
-        ).className =
-            "loading-step-complete";
+    setTimeout(
+
+        function() {
+
+            document.getElementById(
+                "loadingProgressBar"
+            ).style.width =
+                "80%";
 
 
-        document.getElementById(
-            "step3"
-        ).className =
-            "loading-step-active";
+            document.getElementById(
+                "loadingText"
+            ).textContent =
+                "Generating prediction result...";
 
-    }, 1000);
+
+            document.getElementById(
+                "step2"
+            ).className =
+                "loading-step-complete";
+
+
+            document.getElementById(
+                "step3"
+            ).className =
+                "loading-step-active";
+
+        },
+
+        1000
+
+    );
 
 }
-
 
 
 function completeLoading() {
@@ -1912,78 +2142,6 @@ function completeLoading() {
 }
 
 
-/* ========================================
-   LOAD BREAST CANCER TEST SAMPLE
-======================================== */
-
-async function loadBreastCancerSample() {
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_URL}/breast-cancer/test-sample`
-            );
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load test sample."
-            );
-
-        }
-
-        const sample =
-            await response.json();
-
-
-        if (
-            !sample.features ||
-            sample.features.length !== 30
-        ) {
-
-            throw new Error(
-                "Invalid test sample received."
-            );
-
-        }
-
-
-        sample.feature_names.forEach(
-            function(fieldName, index) {
-
-                const input =
-                    document.getElementById(
-                        fieldName
-                    );
-
-                if (input) {
-
-                    input.value =
-                        sample.features[index];
-
-                }
-
-            }
-        );
-
-
-        alert(
-            "Breast cancer test sample loaded successfully."
-        );
-
-    }
-
-    catch (error) {
-
-        alert(
-            "Could not load test sample:\n\n" +
-            error.message
-        );
-
-    }
-
-}
 /* ========================================
    PREDICTION
 ======================================== */
@@ -2015,11 +2173,9 @@ async function predictDisease() {
         !sex
     ) {
 
-
         alert(
             "Please complete patient information."
         );
-
 
         return;
 
@@ -2045,21 +2201,20 @@ async function predictDisease() {
         ) {
 
 
-            const pregnancies =
+            const pregnancyInput =
                 document.getElementById(
                     "Pregnancies"
-                ).value;
+                );
 
 
             if (
-                pregnancies === ""
+                !pregnancyInput ||
+                pregnancyInput.value === ""
             ) {
-
 
                 alert(
                     "Please enter number of pregnancies."
                 );
-
 
                 return;
 
@@ -2068,14 +2223,13 @@ async function predictDisease() {
 
             patientData.Pregnancies =
                 Number(
-                    pregnancies
+                    pregnancyInput.value
                 );
 
         }
 
 
         else {
-
 
             patientData.Pregnancies =
                 0;
@@ -2084,9 +2238,7 @@ async function predictDisease() {
 
 
         patientData.Age =
-            Number(
-                age
-            );
+            Number(age);
 
     }
 
@@ -2102,9 +2254,7 @@ async function predictDisease() {
 
 
         patientData.age =
-            Number(
-                age
-            );
+            Number(age);
 
 
         patientData.sex =
@@ -2123,7 +2273,7 @@ async function predictDisease() {
 
 
     /* ========================================
-       COLLECT FEATURES
+       COLLECT DISEASE FEATURES
     ======================================== */
 
     for (
@@ -2148,7 +2298,7 @@ async function predictDisease() {
         if (!element) {
 
             alert(
-                `Missing form field: ${field.key}`
+                `Missing field: ${field.label}`
             );
 
             return;
@@ -2164,11 +2314,28 @@ async function predictDisease() {
             value === ""
         ) {
 
-
             alert(
                 `Please enter ${field.label}`
             );
 
+            return;
+
+        }
+
+
+        const numberValue =
+            Number(value);
+
+
+        if (
+            Number.isNaN(
+                numberValue
+            )
+        ) {
+
+            alert(
+                `${field.label} must be a valid number.`
+            );
 
             return;
 
@@ -2178,23 +2345,17 @@ async function predictDisease() {
         patientData[
             field.key
         ] =
-            Number(
-                value
-            );
+            numberValue;
 
     }
 
 
     /* ========================================
-       SHOW LOADING
+       SHOW LOADING SCREEN
     ======================================== */
 
     showLoading();
 
-
-    /* ========================================
-       SEND TO BACKEND
-    ======================================== */
 
     try {
 
@@ -2234,7 +2395,6 @@ async function predictDisease() {
             !response.ok
         ) {
 
-
             throw new Error(
 
                 result.detail
@@ -2245,7 +2405,7 @@ async function predictDisease() {
 
                 ||
 
-                "Prediction failed."
+                `Server error: ${response.status}`
 
             );
 
@@ -2255,7 +2415,6 @@ async function predictDisease() {
         if (
             result.error
         ) {
-
 
             throw new Error(
                 result.error
@@ -2334,9 +2493,8 @@ async function predictDisease() {
 }
 
 
-
 /* ========================================
-   HISTORY
+   SAVE HISTORY
 ======================================== */
 
 function savePredictionHistory(
@@ -2350,19 +2508,34 @@ function savePredictionHistory(
 ) {
 
 
-    let history =
+    let history;
 
-        JSON.parse(
 
-            localStorage.getItem(
-                "quantumMedAIHistory"
+    try {
+
+        history =
+
+            JSON.parse(
+
+                localStorage.getItem(
+                    "quantumMedAIHistory"
+                )
+
             )
 
-        )
+            ||
 
-        ||
+            [];
 
-        [];
+    }
+
+    catch (
+        error
+    ) {
+
+        history = [];
+
+    }
 
 
     const record = {
@@ -2415,9 +2588,11 @@ function savePredictionHistory(
 }
 
 
+/* ========================================
+   SHOW HISTORY
+======================================== */
 
 function showHistory() {
-
 
     hideAllPages();
 
@@ -2429,19 +2604,34 @@ function showHistory() {
     );
 
 
-    const history =
+    let history;
 
-        JSON.parse(
 
-            localStorage.getItem(
-                "quantumMedAIHistory"
+    try {
+
+        history =
+
+            JSON.parse(
+
+                localStorage.getItem(
+                    "quantumMedAIHistory"
+                )
+
             )
 
-        )
+            ||
 
-        ||
+            [];
 
-        [];
+    }
+
+    catch (
+        error
+    ) {
+
+        history = [];
+
+    }
 
 
     const historyList =
@@ -2489,7 +2679,8 @@ function showHistory() {
     }
 
 
-    historyList.innerHTML = "";
+    historyList.innerHTML =
+        "";
 
 
     history.forEach(
@@ -2553,13 +2744,12 @@ function showHistory() {
             </h3>
 
 
-            <span
-                style="color:#64748b;"
-            >
+            <span style="color:#64748b;">
 
             ${record.date}
 
             </span>
+
 
             </div>
 
@@ -2590,7 +2780,8 @@ function showHistory() {
             Age:
             </strong>
 
-            ${record.age} Years
+            ${record.age}
+            Years
 
             |
 
@@ -2661,8 +2852,13 @@ function showHistory() {
 }
 
 
+/* ========================================
+   DELETE HISTORY ITEM
+======================================== */
 
-function deleteHistoryItem(index) {
+function deleteHistoryItem(
+    index
+) {
 
 
     let history =
@@ -2702,12 +2898,14 @@ function deleteHistoryItem(index) {
 }
 
 
+/* ========================================
+   CLEAR HISTORY
+======================================== */
 
 function clearHistory() {
 
 
     const confirmation =
-
         confirm(
 
             "Are you sure you want to delete all prediction history?"
@@ -2715,9 +2913,7 @@ function clearHistory() {
         );
 
 
-    if (
-        !confirmation
-    ) {
+    if (!confirmation) {
 
         return;
 
@@ -2732,7 +2928,6 @@ function clearHistory() {
     showHistory();
 
 }
-
 
 
 /* ========================================
@@ -2846,33 +3041,36 @@ function displayResult(
         result.probabilities;
 
 
-    let probability0 = null;
+    let probability0 =
+        null;
 
-    let probability1 = null;
+
+    let probability1 =
+        null;
 
 
     if (
         Array.isArray(
             probabilities
         )
+
+        &&
+
+        probabilities.length >= 2
+
     ) {
 
 
-        if (
-            probabilities.length >= 2
-        ) {
+        probability0 =
+            Number(
+                probabilities[0]
+            );
 
-            probability0 =
-                Number(
-                    probabilities[0]
-                );
 
-            probability1 =
-                Number(
-                    probabilities[1]
-                );
-
-        }
+        probability1 =
+            Number(
+                probabilities[1]
+            );
 
     }
 
@@ -2902,11 +3100,11 @@ function displayResult(
 
             ?
 
-            probability0 + "%"
+            `${probability0}%`
 
             :
 
-            probability1 + "%";
+            `${probability1}%`;
 
     }
 
@@ -2953,11 +3151,16 @@ function displayResult(
         <div class="probability-header">
 
         <span>
+
         ${class0Label}
+
         </span>
 
+
         <strong>
+
         ${probability0}%
+
         </strong>
 
         </div>
@@ -2982,11 +3185,16 @@ function displayResult(
         <div class="probability-header">
 
         <span>
+
         ${class1Label}
+
         </span>
 
+
         <strong>
+
         ${probability1}%
+
         </strong>
 
         </div>
@@ -3040,7 +3248,9 @@ function displayResult(
 
         </strong>
 
+
         <br><br>
+
 
         ${value}
 
@@ -3070,7 +3280,6 @@ function displayResult(
 
     <div style="text-align:center">
 
-
     <div style="font-size:60px">
 
     ${diseaseInfo[disease].icon}
@@ -3084,9 +3293,7 @@ function displayResult(
 
     </h2>
 
-
     </div>
-
 
 
     <h3 class="section-title">
@@ -3102,9 +3309,7 @@ function displayResult(
     <div class="input-item">
 
     <strong>
-
     Name
-
     </strong>
 
     <br><br>
@@ -3117,14 +3322,13 @@ function displayResult(
     <div class="input-item">
 
     <strong>
-
     Age
-
     </strong>
 
     <br><br>
 
-    ${patientInfo.age} Years
+    ${patientInfo.age}
+    Years
 
     </div>
 
@@ -3132,9 +3336,7 @@ function displayResult(
     <div class="input-item">
 
     <strong>
-
     Sex
-
     </strong>
 
     <br><br>
@@ -3147,9 +3349,7 @@ function displayResult(
     <div class="input-item">
 
     <strong>
-
     Disease Analyzed
-
     </strong>
 
     <br><br>
@@ -3164,7 +3364,6 @@ function displayResult(
 
     <div class="assessment">
 
-
     <h3>
 
     Overall Model Prediction
@@ -3178,12 +3377,10 @@ function displayResult(
 
     </div>
 
-
     </div>
 
 
     <div class="confidence-box">
-
 
     <h3>
 
@@ -3197,7 +3394,6 @@ function displayResult(
     ${confidence}
 
     </div>
-
 
     </div>
 
@@ -3214,7 +3410,6 @@ function displayResult(
 
     <div class="model-box">
 
-
     <strong>
 
     ${modelName}
@@ -3229,7 +3424,6 @@ function displayResult(
 
     ${prediction}
 
-
     </div>
 
 
@@ -3242,15 +3436,12 @@ function displayResult(
 
     <div class="input-summary">
 
-
     ${inputHTML}
-
 
     </div>
 
 
     <div class="disclaimer">
-
 
     <strong>
 
@@ -3269,22 +3460,23 @@ function displayResult(
     consultation with a qualified
     healthcare professional.
 
-
     </div>
-
 
     `;
 
 
     window.scrollTo({
 
-        top: 0,
+        top:
+            0,
 
-        behavior: "smooth"
+        behavior:
+            "smooth"
 
     });
 
 }
+
 
 </script>
 
