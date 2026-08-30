@@ -25,7 +25,7 @@ from prediction_engine import predict_disease
 
 
 # ============================================================
-# APP
+# APPLICATION
 # ============================================================
 
 app = FastAPI(title="QuantumMedAI")
@@ -57,6 +57,10 @@ data = load_breast_cancer()
 X = data.data
 y = data.target
 
+
+# ============================================================
+# TRAIN / TEST SPLIT
+# ============================================================
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
@@ -186,7 +190,7 @@ specificity = TN / (TN + FP)
 
 
 # ============================================================
-# PATIENT MODEL
+# PATIENT DATA MODEL
 # ============================================================
 
 class PatientData(BaseModel):
@@ -194,7 +198,7 @@ class PatientData(BaseModel):
 
 
 # ============================================================
-# FRONTEND
+# HOME PAGE
 # ============================================================
 
 @app.get("/")
@@ -222,7 +226,6 @@ def api_status():
 
 @app.get("/dataset-info")
 def dataset_info():
-
     return {
         "dataset": "Breast Cancer Wisconsin Dataset",
         "total_samples": len(data.data),
@@ -233,24 +236,225 @@ def dataset_info():
 
 
 # ============================================================
+# TEST SAMPLES
+# ============================================================
+
+@app.get("/test-sample/{disease_id}")
+def test_sample(disease_id: str):
+
+    # --------------------------------------------------------
+    # DIABETES TEST SAMPLE
+    # --------------------------------------------------------
+
+    if disease_id == "diabetes":
+
+        return {
+            "disease": "diabetes",
+            "sample_type": "demo_test_sample",
+            "features": [
+
+                {
+                    "key": "Pregnancies",
+                    "value": 2
+                },
+
+                {
+                    "key": "Age",
+                    "value": 35
+                },
+
+                {
+                    "key": "Glucose",
+                    "value": 120
+                },
+
+                {
+                    "key": "BloodPressure",
+                    "value": 70
+                },
+
+                {
+                    "key": "SkinThickness",
+                    "value": 30
+                },
+
+                {
+                    "key": "Insulin",
+                    "value": 100
+                },
+
+                {
+                    "key": "BMI",
+                    "value": 32.0
+                },
+
+                {
+                    "key": "DiabetesPedigreeFunction",
+                    "value": 0.5
+                }
+            ]
+        }
+
+
+    # --------------------------------------------------------
+    # HEART DISEASE TEST SAMPLE
+    # --------------------------------------------------------
+
+    if disease_id == "heart_disease":
+
+        return {
+            "disease": "heart_disease",
+            "sample_type": "demo_test_sample",
+            "features": [
+
+                {
+                    "key": "age",
+                    "value": 55
+                },
+
+                {
+                    "key": "sex",
+                    "value": 1
+                },
+
+                {
+                    "key": "cp",
+                    "value": 1
+                },
+
+                {
+                    "key": "trestbps",
+                    "value": 130
+                },
+
+                {
+                    "key": "chol",
+                    "value": 240
+                },
+
+                {
+                    "key": "fbs",
+                    "value": 0
+                },
+
+                {
+                    "key": "restecg",
+                    "value": 1
+                },
+
+                {
+                    "key": "thalach",
+                    "value": 150
+                },
+
+                {
+                    "key": "exang",
+                    "value": 0
+                },
+
+                {
+                    "key": "oldpeak",
+                    "value": 1.0
+                },
+
+                {
+                    "key": "slope",
+                    "value": 1
+                },
+
+                {
+                    "key": "ca",
+                    "value": 0
+                },
+
+                {
+                    "key": "thal",
+                    "value": 2
+                }
+            ]
+        }
+
+
+    # --------------------------------------------------------
+    # BREAST CANCER DATASET TEST SAMPLE
+    # --------------------------------------------------------
+
+    if disease_id == "breast_cancer":
+
+        sample = data.data[0]
+
+        target = int(
+            data.target[0]
+        )
+
+
+        return {
+            "disease": "breast_cancer",
+            "sample_type": "dataset_sample",
+            "sample_number": 1,
+
+            "features": [
+
+                {
+                    "key":
+                        data.feature_names[i],
+
+                    "value":
+                        float(sample[i])
+                }
+
+                for i in range(
+                    len(data.feature_names)
+                )
+            ],
+
+            "target":
+                target,
+
+            "target_name":
+                data.target_names[target]
+        }
+
+
+    return {
+        "error":
+            f"Test sample for '{disease_id}' is not available."
+    }
+
+
+# ============================================================
 # BREAST CANCER TEST SAMPLE
+# COMPATIBILITY ROUTE
 # ============================================================
 
 @app.get("/breast-cancer/test-sample")
 def breast_cancer_test_sample():
 
     sample = data.data[0]
-    target = int(data.target[0])
+
+    target = int(
+        data.target[0]
+    )
+
 
     return {
-        "sample_number": 1,
+
+        "sample_number":
+            1,
+
         "features": [
             float(value)
             for value in sample
         ],
-        "target": target,
-        "target_name": data.target_names[target],
-        "feature_names": list(data.feature_names)
+
+        "target":
+            target,
+
+        "target_name":
+            data.target_names[target],
+
+        "feature_names":
+            list(data.feature_names)
     }
 
 
@@ -262,6 +466,7 @@ def breast_cancer_test_sample():
 def model_performance():
 
     return {
+
         "Logistic Regression Accuracy (%)":
             round(
                 float(logistic_accuracy) * 100,
@@ -295,7 +500,7 @@ def predict(
 
         return {
             "error":
-            "Exactly 30 medical features are required"
+                "Exactly 30 medical features are required"
         }
 
 
@@ -461,7 +666,7 @@ def disease_details(
 
         return {
             "error":
-            "Disease not found"
+                "Disease not found"
         }
 
 
@@ -469,7 +674,7 @@ def disease_details(
 
 
 # ============================================================
-# TRAIN DISEASE
+# TRAIN DISEASE MODEL
 # ============================================================
 
 @app.get("/train/{disease_id}")
@@ -510,7 +715,7 @@ def train_selected_disease(
 
         return {
             "error":
-            str(error)
+                str(error)
         }
 
 
@@ -538,8 +743,6 @@ def predict_selected_disease(
     except Exception as error:
 
         return {
-
             "error":
-            str(error)
-
+                str(error)
         }
