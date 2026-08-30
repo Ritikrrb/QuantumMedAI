@@ -41,7 +41,7 @@ app.add_middleware(
 
 
 # ============================================================
-# FILE PATHS
+# PATHS
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -58,15 +58,11 @@ X = data.data
 y = data.target
 
 
-# ============================================================
-# TRAIN / TEST SPLIT
-# ============================================================
-
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
     test_size=0.2,
-    random_state=42
+    random_state=42,
 )
 
 
@@ -173,15 +169,10 @@ f1 = f1_score(
     pos_label=0
 )
 
-
 cm = confusion_matrix(
     y_test,
     logistic_predictions
 )
-
-
-# Class 0 = malignant
-# Class 1 = benign
 
 TN = cm[1, 1]
 FP = cm[1, 0]
@@ -190,7 +181,7 @@ specificity = TN / (TN + FP)
 
 
 # ============================================================
-# PATIENT DATA MODEL
+# PATIENT MODEL
 # ============================================================
 
 class PatientData(BaseModel):
@@ -204,7 +195,7 @@ class PatientData(BaseModel):
 @app.get("/")
 def home():
     return FileResponse(
-        path=INDEX_FILE,
+        INDEX_FILE,
         media_type="text/html"
     )
 
@@ -236,14 +227,14 @@ def dataset_info():
 
 
 # ============================================================
-# TEST SAMPLES
+# TEST SAMPLE - ALL DISEASES
 # ============================================================
 
 @app.get("/test-sample/{disease_id}")
 def test_sample(disease_id: str):
 
     # --------------------------------------------------------
-    # DIABETES TEST SAMPLE
+    # DIABETES
     # --------------------------------------------------------
 
     if disease_id == "diabetes":
@@ -252,42 +243,34 @@ def test_sample(disease_id: str):
             "disease": "diabetes",
             "sample_type": "demo_test_sample",
             "features": [
-
                 {
                     "key": "Pregnancies",
                     "value": 2
                 },
-
                 {
                     "key": "Age",
                     "value": 35
                 },
-
                 {
                     "key": "Glucose",
                     "value": 120
                 },
-
                 {
                     "key": "BloodPressure",
                     "value": 70
                 },
-
                 {
                     "key": "SkinThickness",
                     "value": 30
                 },
-
                 {
                     "key": "Insulin",
                     "value": 100
                 },
-
                 {
                     "key": "BMI",
                     "value": 32.0
                 },
-
                 {
                     "key": "DiabetesPedigreeFunction",
                     "value": 0.5
@@ -297,7 +280,7 @@ def test_sample(disease_id: str):
 
 
     # --------------------------------------------------------
-    # HEART DISEASE TEST SAMPLE
+    # HEART DISEASE
     # --------------------------------------------------------
 
     if disease_id == "heart_disease":
@@ -306,67 +289,54 @@ def test_sample(disease_id: str):
             "disease": "heart_disease",
             "sample_type": "demo_test_sample",
             "features": [
-
                 {
                     "key": "age",
                     "value": 55
                 },
-
                 {
                     "key": "sex",
                     "value": 1
                 },
-
                 {
                     "key": "cp",
                     "value": 1
                 },
-
                 {
                     "key": "trestbps",
                     "value": 130
                 },
-
                 {
                     "key": "chol",
                     "value": 240
                 },
-
                 {
                     "key": "fbs",
                     "value": 0
                 },
-
                 {
                     "key": "restecg",
                     "value": 1
                 },
-
                 {
                     "key": "thalach",
                     "value": 150
                 },
-
                 {
                     "key": "exang",
                     "value": 0
                 },
-
                 {
                     "key": "oldpeak",
                     "value": 1.0
                 },
-
                 {
                     "key": "slope",
                     "value": 1
                 },
-
                 {
                     "key": "ca",
                     "value": 0
                 },
-
                 {
                     "key": "thal",
                     "value": 2
@@ -376,43 +346,29 @@ def test_sample(disease_id: str):
 
 
     # --------------------------------------------------------
-    # BREAST CANCER DATASET TEST SAMPLE
+    # BREAST CANCER
     # --------------------------------------------------------
 
     if disease_id == "breast_cancer":
 
         sample = data.data[0]
-
-        target = int(
-            data.target[0]
-        )
-
+        target = int(data.target[0])
 
         return {
             "disease": "breast_cancer",
             "sample_type": "dataset_sample",
             "sample_number": 1,
-
             "features": [
-
                 {
-                    "key":
-                        data.feature_names[i],
-
-                    "value":
-                        float(sample[i])
+                    "key": data.feature_names[i],
+                    "value": float(sample[i])
                 }
-
                 for i in range(
                     len(data.feature_names)
                 )
             ],
-
-            "target":
-                target,
-
-            "target_name":
-                data.target_names[target]
+            "target": target,
+            "target_name": data.target_names[target]
         }
 
 
@@ -424,37 +380,23 @@ def test_sample(disease_id: str):
 
 # ============================================================
 # BREAST CANCER TEST SAMPLE
-# COMPATIBILITY ROUTE
 # ============================================================
 
 @app.get("/breast-cancer/test-sample")
 def breast_cancer_test_sample():
 
     sample = data.data[0]
-
-    target = int(
-        data.target[0]
-    )
-
+    target = int(data.target[0])
 
     return {
-
-        "sample_number":
-            1,
-
+        "sample_number": 1,
         "features": [
             float(value)
             for value in sample
         ],
-
-        "target":
-            target,
-
-        "target_name":
-            data.target_names[target],
-
-        "feature_names":
-            list(data.feature_names)
+        "target": target,
+        "target_name": data.target_names[target],
+        "feature_names": list(data.feature_names)
     }
 
 
@@ -466,7 +408,6 @@ def breast_cancer_test_sample():
 def model_performance():
 
     return {
-
         "Logistic Regression Accuracy (%)":
             round(
                 float(logistic_accuracy) * 100,
@@ -492,9 +433,7 @@ def model_performance():
 # ============================================================
 
 @app.post("/predict")
-def predict(
-    patient: PatientData
-):
+def predict(patient: PatientData):
 
     if len(patient.features) != 30:
 
@@ -549,21 +488,17 @@ def test_prediction():
 
     patient = data.data[0]
 
-
     patient_scaled = scaler.transform(
         [patient]
     )
-
 
     prediction = model.predict(
         patient_scaled
     )[0]
 
-
     probabilities = model.predict_proba(
         patient_scaled
     )[0]
-
 
     return {
 
@@ -643,7 +578,6 @@ def medical_metrics():
 def list_diseases():
 
     return {
-
         "total_diseases":
             len(get_diseases()),
 
@@ -661,7 +595,6 @@ def disease_details(
         disease_id
     )
 
-
     if disease is None:
 
         return {
@@ -669,12 +602,11 @@ def disease_details(
                 "Disease not found"
         }
 
-
     return disease
 
 
 # ============================================================
-# TRAIN DISEASE MODEL
+# TRAIN DISEASE
 # ============================================================
 
 @app.get("/train/{disease_id}")
@@ -687,7 +619,6 @@ def train_selected_disease(
         result = train_disease(
             disease_id
         )
-
 
         return {
 
@@ -709,7 +640,6 @@ def train_selected_disease(
             "best_accuracy":
                 result["best_accuracy"]
         }
-
 
     except Exception as error:
 
@@ -736,9 +666,7 @@ def predict_selected_disease(
             patient_data
         )
 
-
         return result
-
 
     except Exception as error:
 
