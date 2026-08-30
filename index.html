@@ -1,518 +1,3157 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>QuantumMedAI</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: #0b1020;
-            color: white;
-        }
-
-        header {
-            padding: 22px 7%;
-            background: #111936;
-            border-bottom: 1px solid #26345f;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            color: #6ea8ff;
-        }
-
-        header span {
-            color: #97a6c7;
-        }
-
-        main {
-            max-width: 1100px;
-            margin: auto;
-            padding: 45px 20px;
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .hero h2 {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .hero p {
-            color: #b8c4df;
-            font-size: 18px;
-        }
-
-        .disease-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: #151f3d;
-            padding: 30px;
-            border-radius: 18px;
-            border: 1px solid #293a68;
-            text-align: center;
-        }
-
-        .card h3 {
-            margin-bottom: 15px;
-            font-size: 23px;
-        }
-
-        .card p {
-            color: #aebbd6;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        button {
-            background: #4c8dff;
-            color: white;
-            border: none;
-            padding: 13px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-        }
-
-        button:hover {
-            background: #2f75e8;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        #analysisPage {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .back-button {
-            width: auto;
-            margin-bottom: 25px;
-            background: #2a3557;
-        }
-
-        .analysis-card {
-            background: #151f3d;
-            padding: 30px;
-            border-radius: 18px;
-            border: 1px solid #293a68;
-        }
-
-        .analysis-card h2 {
-            margin-bottom: 15px;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        input {
-            width: 100%;
-            padding: 13px;
-            border-radius: 8px;
-            border: 1px solid #44527a;
-            background: #0d142b;
-            color: white;
-        }
-
-        .result {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 12px;
-            background: #0d142b;
-            min-height: 80px;
-        }
-
-        .error {
-            color: #ff8a8a;
-        }
 
-        .success {
-            color: #8affbd;
-        }
-
-        footer {
-            text-align: center;
-            color: #71809f;
-            padding: 30px;
-        }
-    </style>
-</head>
-
-<body>
-
-<div id="homePage">
-
-    <header>
-        <h1>QuantumMedAI</h1>
-        <span>AI Disease Analysis Platform</span>
-    </header>
-
-    <main>
-
-        <section class="hero">
-            <h2>AI-Powered Medical Disease Analysis</h2>
-            <p>Select a disease and enter patient data for machine-learning-based analysis.</p>
-        </section>
-
-        <section class="disease-grid">
-
-            <div class="card">
-                <h3>🩺 Diabetes</h3>
-                <p>Analyze diabetes risk using the trained machine learning model.</p>
-                <button onclick="openDisease('diabetes')">
-                    Analyse Diabetes
-                </button>
-            </div>
-
-            <div class="card">
-                <h3>❤️ Heart Disease</h3>
-                <p>Analyze heart disease risk using patient medical information.</p>
-                <button onclick="openDisease('heart_disease')">
-                    Analyse Heart Disease
-                </button>
-            </div>
-
-            <div class="card">
-                <h3>🎗️ Breast Cancer</h3>
-                <p>Analyze breast cancer data using the QuantumMedAI model.</p>
-                <button onclick="openDisease('breast_cancer')">
-                    Analyse Breast Cancer
-                </button>
-            </div>
-
-        </section>
-
-    </main>
-
-    <footer>
-        QuantumMedAI • AI-assisted medical analysis • Educational use only
-    </footer>
-
-</div>
-
-
-<div id="analysisPage" class="hidden">
-
-    <button class="back-button" onclick="goHome()">
-        ← Back
-    </button>
-
-    <div class="analysis-card">
-
-        <h2 id="diseaseTitle">Disease Analysis</h2>
-
-        <p id="instruction">
-            Enter patient information.
-        </p>
-
-        <div id="inputContainer" class="input-grid"></div>
-
-        <button onclick="analyseDisease()" id="analyseButton">
-            Analyse
-        </button>
-
-        <div id="result" class="result">
-            Select a disease and enter the required information.
-        </div>
-
-    </div>
-
-</div>
-
-
-<script>
-
-const API_URL = "https://quantummedai-6.onrender.com";
-
-let currentDisease = null;
-
-
-const diseaseInputs = {
-
-    diabetes: [
-        {name: "Pregnancies", key: "Pregnancies"},
-        {name: "Glucose", key: "Glucose"},
-        {name: "Blood Pressure", key: "BloodPressure"},
-        {name: "Skin Thickness", key: "SkinThickness"},
-        {name: "Insulin", key: "Insulin"},
-        {name: "BMI", key: "BMI"},
-        {name: "Diabetes Pedigree Function", key: "DiabetesPedigreeFunction"},
-        {name: "Age", key: "Age"}
-    ],
-
-    heart_disease: [
-        {name: "Age", key: "age"},
-        {name: "Sex (0 Female / 1 Male)", key: "sex"},
-        {name: "Chest Pain Type", key: "cp"},
-        {name: "Resting Blood Pressure", key: "trestbps"},
-        {name: "Cholesterol", key: "chol"},
-        {name: "Fasting Blood Sugar", key: "fbs"},
-        {name: "Resting ECG", key: "restecg"},
-        {name: "Maximum Heart Rate", key: "thalach"},
-        {name: "Exercise Induced Angina", key: "exang"},
-        {name: "Oldpeak", key: "oldpeak"},
-        {name: "Slope", key: "slope"},
-        {name: "CA", key: "ca"},
-        {name: "Thal", key: "thal"}
-    ],
-
-    breast_cancer: [
-        {name: "Enter 30 medical features", key: "features"}
-    ]
-};
-
-
-function openDisease(disease) {
-
-    currentDisease = disease;
-
-    document.getElementById("homePage").classList.add("hidden");
-
-    document.getElementById("analysisPage").classList.remove("hidden");
-
-    document.getElementById("diseaseTitle").textContent =
-        disease.replace("_", " ").toUpperCase() + " ANALYSIS";
-
-    const container =
-        document.getElementById("inputContainer");
-
-    container.innerHTML = "";
-
-    document.getElementById("result").innerHTML =
-        "Enter patient data and click Analyse.";
-
-    if (disease === "breast_cancer") {
-
-        document.getElementById("instruction").textContent =
-            "Enter 30 numerical medical features separated by commas.";
-
-        const input = document.createElement("input");
-
-        input.id = "features";
-
-        input.placeholder =
-            "Example: 17.99,10.38,122.8,...";
-
-        input.style.gridColumn = "1 / -1";
-
-        container.appendChild(input);
-
-    } else {
-
-        document.getElementById("instruction").textContent =
-            "Enter all patient medical values.";
-
-        diseaseInputs[disease].forEach(function(item) {
-
-            const input =
-                document.createElement("input");
-
-            input.type = "number";
-
-            input.step = "any";
-
-            input.id = item.key;
-
-            input.placeholder = item.name;
-
-            container.appendChild(input);
-
-        });
-
+<meta charset="UTF-8">
+
+<meta name="viewport"
+   content="width=device-width, initial-scale=1.0">
+
+<title>QuantumMedAI</title>
+
+<style>
+
+/* ========================================
+   GLOBAL
+======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+header {
+    background: #111827;
+    color: white;
+    padding: 22px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin-bottom: 0;
+    color: #cbd5e1;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+button {
+    font-family: inherit;
+}
+
+
+/* ========================================
+   HOME DASHBOARD
+======================================== */
+
+.dashboard-title {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.dashboard-title h2 {
+    margin-bottom: 10px;
+}
+
+.dashboard-title p {
+    color: #64748b;
+}
+
+.disease-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.disease-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s;
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.08);
+}
+
+.disease-card:hover {
+    transform: translateY(-5px);
+}
+
+.disease-icon {
+    font-size: 55px;
+}
+
+.disease-card h3 {
+    margin-bottom: 10px;
+}
+
+.disease-card p {
+    color: #64748b;
+    min-height: 60px;
+}
+
+.analyze-button {
+    margin-top: 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+
+/* ========================================
+   CARDS
+======================================== */
+
+.info-card,
+.form-card,
+.result-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.08);
+}
+
+.back-button {
+    background: #64748b;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.info-icon {
+    font-size: 60px;
+    text-align: center;
+}
+
+.info-card h2 {
+    text-align: center;
+}
+
+.info-description {
+    text-align: center;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.info-box {
+    background: #f8fafc;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.info-box strong {
+    display: block;
+    color: #2563eb;
+    margin-bottom: 8px;
+}
+
+.primary-button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 30px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+/* ========================================
+   FORM
+======================================== */
+
+.section-title {
+    margin-top: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+label {
+    display: block;
+    margin-top: 18px;
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+#pregnancySection {
+    display: none;
+}
+
+
+/* ========================================
+   RESULT
+======================================== */
+
+.assessment {
+    text-align: center;
+    padding: 25px;
+    margin-top: 25px;
+    border-radius: 12px;
+    background: #eef6ff;
+}
+
+.risk-text {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.confidence-box {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.confidence-value {
+    font-size: 40px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.probability-item {
+    margin: 20px 0;
+}
+
+.probability-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.progress-bar {
+    height: 18px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2563eb;
+}
+
+.input-summary {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.input-item {
+    padding: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.model-box {
+    background: #f1f5f9;
+    padding: 18px;
+    border-radius: 10px;
+}
+
+.disclaimer {
+    background: #fff7ed;
+    border-left: 5px solid #f59e0b;
+    padding: 18px;
+    border-radius: 8px;
+    margin-top: 25px;
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   BREAST CANCER
+======================================== */
+
+.feature-group {
+    margin-top: 25px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.feature-group h3 {
+    margin-top: 0;
+}
+
+
+/* ========================================
+   AI LOADING SCREEN
+======================================== */
+
+.loading-card {
+    background: white;
+    max-width: 600px;
+    margin: 70px auto;
+    padding: 45px 30px;
+    text-align: center;
+    border-radius: 18px;
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,0.12);
+}
+
+.ai-loader {
+    font-size: 70px;
+    animation: aiPulse 1.5s infinite;
+}
+
+@keyframes aiPulse {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
     }
 
 }
 
+.loading-progress {
+    width: 100%;
+    height: 14px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 30px 0;
+}
 
-function goHome() {
+.loading-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #2563eb;
+    border-radius: 20px;
+    transition: width 0.5s ease;
+}
 
-    currentDisease = null;
+.loading-steps {
+    text-align: left;
+    line-height: 2.2;
+    color: #94a3b8;
+}
 
-    document.getElementById("analysisPage")
-        .classList.add("hidden");
+.loading-step-active {
+    color: #2563eb;
+    font-weight: bold;
+}
 
-    document.getElementById("homePage")
-        .classList.remove("hidden");
+.loading-step-complete {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 12px;
+    }
+
+    .form-card,
+    .info-card,
+    .result-card {
+        padding: 20px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>⚕️ QuantumMedAI</h1>
+
+<p>AI-Powered Multi-Disease Prediction System</p>
+
+</header>
+
+<div class="container">
+
+<!-- ========================================
+     HOME
+======================================== -->
+
+<div id="homePage">
+
+<div class="dashboard-title">
+
+<h2>Health Analysis Dashboard</h2>
+
+<p>
+Select a disease module to begin AI-assisted analysis.
+</p>
+
+</div>
+
+<div class="disease-grid">
+
+<!-- DIABETES -->
+
+<div
+    class="disease-card"
+    onclick="showDiseaseInfo('diabetes')"
+>
+
+<div class="disease-icon">
+🩸
+</div>
+
+<h3>Diabetes</h3>
+
+<p>
+Analyze diabetes-related health data using an AI prediction model.
+</p>
+
+<button
+class="analyze-button"
+type="button"
+
+>
+
+Analyze Diabetes </button>
+
+</div>
+
+<!-- HEART -->
+
+<div
+    class="disease-card"
+    onclick="showDiseaseInfo('heart_disease')"
+>
+
+<div class="disease-icon">
+❤️
+</div>
+
+<h3>Heart Disease</h3>
+
+<p>
+Analyze cardiovascular measurements and risk-related patterns.
+</p>
+
+<button
+class="analyze-button"
+type="button"
+
+>
+
+Analyze Heart Health </button>
+
+</div>
+
+<!-- BREAST CANCER -->
+
+<div
+    class="disease-card"
+    onclick="showDiseaseInfo('breast_cancer')"
+>
+
+<div class="disease-icon">
+🧬
+</div>
+
+<h3>Breast Cancer</h3>
+
+<p>
+Analyze trained tumor measurement features using AI.
+</p>
+
+<button
+class="analyze-button"
+type="button"
+
+>
+
+Analyze Data </button>
+
+</div>
+
+<!-- HISTORY -->
+
+<div
+    class="disease-card"
+    onclick="showHistory()"
+>
+
+<div class="disease-icon">
+📚
+</div>
+
+<h3>Prediction History</h3>
+
+<p>
+View previous AI health analyses performed in this browser.
+</p>
+
+<button
+class="analyze-button"
+type="button"
+
+>
+
+View History </button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================================
+     PREDICTION HISTORY
+======================================== -->
+
+<div
+    id="historyPage"
+    class="hidden"
+>
+
+<button
+class="back-button"
+onclick="showHome()"
+type="button"
+
+>
+
+← Back to Dashboard
+
+</button>
+
+<div class="result-card">
+
+<div
+    style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+    "
+>
+
+<h2 style="margin:0;">
+📚 Prediction History
+</h2>
+
+<button
+class="back-button"
+style="
+margin:0;
+background:#dc2626;
+"
+onclick="clearHistory()"
+type="button"
+
+>
+
+Clear History
+
+</button>
+
+</div>
+
+<p style="color:#64748b;">
+
+Previous AI analyses saved in this browser.
+
+</p>
+
+<div id="historyList"></div>
+
+</div>
+
+</div>
+
+<!-- ========================================
+     DISEASE INFORMATION
+======================================== -->
+
+<div
+    id="infoPage"
+    class="hidden"
+>
+
+<button
+class="back-button"
+onclick="showHome()"
+type="button"
+
+>
+
+← Back to Dashboard
+
+</button>
+
+<div class="info-card">
+
+<div
+    id="infoIcon"
+    class="info-icon"
+></div>
+
+<h2 id="infoTitle"></h2>
+
+<p
+    id="infoDescription"
+    class="info-description"
+></p>
+
+<div
+    id="infoGrid"
+    class="info-grid"
+></div>
+
+<button
+class="primary-button"
+onclick="startAnalysis()"
+type="button"
+
+>
+
+START ANALYSIS
+
+</button>
+
+</div>
+
+</div>
+
+<!-- ========================================
+     FORM PAGE
+======================================== -->
+
+<div
+    id="formPage"
+    class="hidden"
+>
+
+<button
+class="back-button"
+onclick="showDiseaseInfo(currentDisease)"
+type="button"
+
+>
+
+← Back
+
+</button>
+
+<div class="form-card">
+
+<h2 id="formTitle">
+Health Analysis
+</h2>
+
+<p id="formNote">
+
+Enter patient information and medical data.
+
+</p>
+
+<h3 class="section-title">
+
+Patient Information
+
+</h3>
+
+<label for="patientName">
+
+Full Name
+
+</label>
+
+<input
+type="text"
+id="patientName"
+placeholder="Enter patient's full name"
+
+>
+
+<label for="patientAge">
+
+Age (Years)
+
+</label>
+
+<input
+type="number"
+id="patientAge"
+min="1"
+placeholder="Enter age"
+
+>
+
+<label for="patientSex">
+
+Sex
+
+</label>
+
+<select
+id="patientSex"
+onchange="updatePregnancyField()"
+
+>
+
+<option value="">
+
+-- Select Sex --
+
+</option>
+
+<option value="male">
+
+Male
+
+</option>
+
+<option value="female">
+
+Female
+
+</option>
+
+</select>
+
+<div id="patientForm"></div>
+
+<button
+class="primary-button"
+onclick="predictDisease()"
+type="button"
+
+>
+
+🤖 ANALYZE WITH AI
+
+</button>
+
+</div>
+
+</div>
+
+<!-- ========================================
+     RESULT PAGE
+======================================== -->
+
+<div
+    id="resultPage"
+    class="hidden"
+>
+
+<button
+class="back-button"
+onclick="showHome()"
+type="button"
+
+>
+
+← Back to Dashboard
+
+</button>
+
+<div class="result-card">
+
+<div id="resultContent"></div>
+
+</div>
+
+</div>
+
+<!-- ========================================
+     AI LOADING PAGE
+======================================== -->
+
+<div
+    id="loadingPage"
+    class="hidden"
+>
+
+<div class="loading-card">
+
+<div class="ai-loader">
+🤖
+</div>
+
+<h2>
+Quantum AI is Analyzing
+</h2>
+
+<p id="loadingText">
+Processing patient health data...
+</p>
+
+<div class="loading-progress">
+
+<div
+    id="loadingProgressBar"
+    class="loading-progress-fill"
+></div>
+
+</div>
+
+<div class="loading-steps">
+
+<div id="step1">
+○ Validating patient health data
+</div>
+
+<div id="step2">
+○ Running trained AI model
+</div>
+
+<div id="step3">
+○ Generating prediction result
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+
+/* ========================================
+   API CONFIGURATION
+======================================== */
+
+const API_URL =
+    "https://quantummedai-6.onrender.com";
+
+
+/* ========================================
+   CURRENT DISEASE
+======================================== */
+
+let currentDisease = "";
+
+
+/* ========================================
+   DISEASE INFORMATION
+======================================== */
+
+const diseaseInfo = {
+
+    diabetes: {
+
+        icon: "🩸",
+
+        name: "Diabetes Analysis",
+
+        description:
+        "This module uses patient health parameters to estimate patterns associated with the diabetes classes used by the trained model.",
+
+        model:
+        "Random Forest",
+
+        accuracy:
+        "87.01%",
+
+        features:
+        "8",
+
+        samples:
+        "768"
+
+    },
+
+
+    heart_disease: {
+
+        icon: "❤️",
+
+        name: "Heart Disease Analysis",
+
+        description:
+        "This module analyzes cardiovascular measurements using the trained Heart Disease AI model.",
+
+        model:
+        "Random Forest",
+
+        accuracy:
+        "90.16%",
+
+        features:
+        "13",
+
+        samples:
+        "303"
+
+    },
+
+
+    breast_cancer: {
+
+        icon: "🧬",
+
+        name: "Breast Cancer Analysis",
+
+        description:
+        "This module analyzes 30 tumor measurement features using a trained Support Vector Machine model.",
+
+        model:
+        "Support Vector Machine",
+
+        accuracy:
+        "96.49%",
+
+        features:
+        "30",
+
+        samples:
+        "569"
+
+    }
+
+};
+
+
+/* ========================================
+   DISEASE FIELDS
+======================================== */
+
+const diseaseFields = {
+
+
+    diabetes: [
+
+        {
+            key: "Glucose",
+            label: "Glucose Level",
+            unit: "mg/dL"
+        },
+
+        {
+            key: "BloodPressure",
+            label: "Diastolic Blood Pressure",
+            unit: "mmHg"
+        },
+
+        {
+            key: "SkinThickness",
+            label: "Triceps Skin Fold Thickness",
+            unit: "mm"
+        },
+
+        {
+            key: "Insulin",
+            label: "2-Hour Serum Insulin",
+            unit: "µU/mL"
+        },
+
+        {
+            key: "BMI",
+            label: "Body Mass Index",
+            unit: "kg/m²"
+        },
+
+        {
+            key: "DiabetesPedigreeFunction",
+            label: "Diabetes Pedigree Function",
+            unit: "Score"
+        }
+
+    ],
+
+
+    heart_disease: [
+
+        {
+            key: "cp",
+            label: "Chest Pain Type",
+            unit: "0 to 3"
+        },
+
+        {
+            key: "trestbps",
+            label: "Resting Blood Pressure",
+            unit: "mmHg"
+        },
+
+        {
+            key: "chol",
+            label: "Serum Cholesterol",
+            unit: "mg/dL"
+        },
+
+        {
+            key: "fbs",
+            label: "Fasting Blood Sugar",
+            unit: "0 = No, 1 = Yes"
+        },
+
+        {
+            key: "restecg",
+            label: "Resting ECG Result",
+            unit: "0 to 2"
+        },
+
+        {
+            key: "thalach",
+            label: "Maximum Heart Rate",
+            unit: "beats/min"
+        },
+
+        {
+            key: "exang",
+            label: "Exercise-Induced Angina",
+            unit: "0 = No, 1 = Yes"
+        },
+
+        {
+            key: "oldpeak",
+            label: "ST Depression",
+            unit: "ECG units"
+        },
+
+        {
+            key: "slope",
+            label: "ST Segment Slope",
+            unit: "0 to 2"
+        },
+
+        {
+            key: "ca",
+            label: "Number of Major Vessels",
+            unit: "0 to 3"
+        },
+
+        {
+            key: "thal",
+            label: "Thalassemia Test Result",
+            unit: "1 to 3"
+        }
+
+    ],
+
+
+    breast_cancer: [
+
+        {
+            key: "mean radius",
+            label: "Mean Radius",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean texture",
+            label: "Mean Texture",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean perimeter",
+            label: "Mean Perimeter",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean area",
+            label: "Mean Area",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean smoothness",
+            label: "Mean Smoothness",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean compactness",
+            label: "Mean Compactness",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean concavity",
+            label: "Mean Concavity",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean concave points",
+            label: "Mean Concave Points",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean symmetry",
+            label: "Mean Symmetry",
+            group: "Mean Measurements"
+        },
+
+        {
+            key: "mean fractal dimension",
+            label: "Mean Fractal Dimension",
+            group: "Mean Measurements"
+        },
+
+
+        {
+            key: "radius error",
+            label: "Radius Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "texture error",
+            label: "Texture Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "perimeter error",
+            label: "Perimeter Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "area error",
+            label: "Area Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "smoothness error",
+            label: "Smoothness Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "compactness error",
+            label: "Compactness Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "concavity error",
+            label: "Concavity Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "concave points error",
+            label: "Concave Points Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "symmetry error",
+            label: "Symmetry Error",
+            group: "Error Measurements"
+        },
+
+        {
+            key: "fractal dimension error",
+            label: "Fractal Dimension Error",
+            group: "Error Measurements"
+        },
+
+
+        {
+            key: "worst radius",
+            label: "Worst Radius",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst texture",
+            label: "Worst Texture",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst perimeter",
+            label: "Worst Perimeter",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst area",
+            label: "Worst Area",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst smoothness",
+            label: "Worst Smoothness",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst compactness",
+            label: "Worst Compactness",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst concavity",
+            label: "Worst Concavity",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst concave points",
+            label: "Worst Concave Points",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst symmetry",
+            label: "Worst Symmetry",
+            group: "Worst Measurements"
+        },
+
+        {
+            key: "worst fractal dimension",
+            label: "Worst Fractal Dimension",
+            group: "Worst Measurements"
+        }
+
+    ]
+
+};
+
+
+/* ========================================
+   PAGE NAVIGATION
+======================================== */
+
+function hideAllPages() {
+
+    document.getElementById(
+        "homePage"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+        "historyPage"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+        "infoPage"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+        "formPage"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+        "resultPage"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+        "loadingPage"
+    ).classList.add("hidden");
 
 }
 
 
-async function analyseDisease() {
 
-    const result =
-        document.getElementById("result");
+function showHome() {
 
-    const button =
-        document.getElementById("analyseButton");
+    hideAllPages();
 
-    if (!currentDisease) {
 
-        result.innerHTML =
-            "<span class='error'>Please select a disease first.</span>";
+    document.getElementById(
+        "homePage"
+    ).classList.remove("hidden");
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+
+/* ========================================
+   DISEASE INFORMATION
+======================================== */
+
+function showDiseaseInfo(disease) {
+
+    currentDisease = disease;
+
+
+    hideAllPages();
+
+
+    document.getElementById(
+        "infoPage"
+    ).classList.remove("hidden");
+
+
+    const info =
+        diseaseInfo[disease];
+
+
+    document.getElementById(
+        "infoIcon"
+    ).textContent =
+        info.icon;
+
+
+    document.getElementById(
+        "infoTitle"
+    ).textContent =
+        info.name;
+
+
+    document.getElementById(
+        "infoDescription"
+    ).textContent =
+        info.description;
+
+
+    document.getElementById(
+        "infoGrid"
+    ).innerHTML = `
+
+    <div class="info-box">
+
+        <strong>
+        AI Model
+        </strong>
+
+        ${info.model}
+
+    </div>
+
+
+    <div class="info-box">
+
+        <strong>
+        Validation Accuracy
+        </strong>
+
+        ${info.accuracy}
+
+    </div>
+
+
+    <div class="info-box">
+
+        <strong>
+        Features Used
+        </strong>
+
+        ${info.features}
+
+    </div>
+
+
+    <div class="info-box">
+
+        <strong>
+        Dataset Samples
+        </strong>
+
+        ${info.samples}
+
+    </div>
+
+    `;
+
+}
+
+
+
+/* ========================================
+   START ANALYSIS
+======================================== */
+
+function startAnalysis() {
+
+    hideAllPages();
+
+
+    document.getElementById(
+        "formPage"
+    ).classList.remove("hidden");
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        diseaseInfo[currentDisease].name;
+
+
+    createForm();
+
+}
+
+
+
+/* ========================================
+   CREATE FORM
+======================================== */
+
+function createForm() {
+
+    const form =
+        document.getElementById(
+            "patientForm"
+        );
+
+
+    form.innerHTML = "";
+
+
+    if (
+        currentDisease ===
+        "diabetes"
+    ) {
+
+        const pregnancySection =
+            document.createElement("div");
+
+
+        pregnancySection.id =
+            "pregnancySection";
+
+
+        pregnancySection.innerHTML = `
+
+        <h3 class="section-title">
+
+        Medical Information
+
+        </h3>
+
+
+        <label>
+
+        Number of Pregnancies
+
+        </label>
+
+
+        <input
+            type="number"
+            id="Pregnancies"
+            min="0"
+            placeholder="Enter number of pregnancies"
+        >
+
+        `;
+
+
+        form.appendChild(
+            pregnancySection
+        );
+
+    }
+
+
+    else {
+
+        const title =
+            document.createElement("h3");
+
+
+        title.className =
+            "section-title";
+
+
+        title.textContent =
+            "Medical Information";
+
+
+        form.appendChild(title);
+
+    }
+
+
+    let currentGroup = null;
+
+    let groupDiv = null;
+
+
+    diseaseFields[
+        currentDisease
+    ].forEach(function(field) {
+
+
+        if (
+            currentDisease ===
+            "breast_cancer"
+        ) {
+
+
+            if (
+                field.group !==
+                currentGroup
+            ) {
+
+
+                currentGroup =
+                    field.group;
+
+
+                groupDiv =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                groupDiv.className =
+                    "feature-group";
+
+
+                groupDiv.innerHTML =
+                    `<h3>${currentGroup}</h3>`;
+
+
+                form.appendChild(
+                    groupDiv
+                );
+
+            }
+
+        }
+
+
+        const container =
+            document.createElement(
+                "div"
+            );
+
+
+        const label =
+            document.createElement(
+                "label"
+            );
+
+
+        label.textContent =
+
+            field.unit
+
+            ?
+
+            `${field.label} (${field.unit})`
+
+            :
+
+            field.label;
+
+
+        const input =
+            document.createElement(
+                "input"
+            );
+
+
+        input.type =
+            "number";
+
+
+        input.step =
+            "any";
+
+
+        input.id =
+            field.key;
+
+
+        input.placeholder =
+            `Enter ${field.label}`;
+
+
+        container.appendChild(
+            label
+        );
+
+
+        container.appendChild(
+            input
+        );
+
+
+        if (
+            currentDisease ===
+            "breast_cancer"
+        ) {
+
+
+            groupDiv.appendChild(
+                container
+            );
+
+        }
+
+        else {
+
+
+            form.appendChild(
+                container
+            );
+
+        }
+
+    });
+
+
+    updatePregnancyField();
+
+}
+
+
+
+/* ========================================
+   PREGNANCY LOGIC
+======================================== */
+
+function updatePregnancyField() {
+
+    const section =
+        document.getElementById(
+            "pregnancySection"
+        );
+
+
+    if (!section) {
 
         return;
 
     }
 
 
-    let patientData = {};
+    const sex =
+        document.getElementById(
+            "patientSex"
+        ).value;
 
 
-    if (currentDisease === "breast_cancer") {
+    section.style.display =
 
-        const text =
-            document.getElementById("features").value.trim();
+        sex === "female"
 
-        const features =
-            text
-            .split(",")
-            .map(value => Number(value.trim()))
-            .filter(value => !Number.isNaN(value));
+        ?
 
+        "block"
 
-        if (features.length !== 30) {
+        :
 
-            result.innerHTML =
-                "<span class='error'>Please enter exactly 30 valid numerical values.</span>";
+        "none";
 
-            return;
-
-        }
-
-        patientData.features = features;
-
-    } else {
-
-        const inputs =
-            diseaseInputs[currentDisease];
+}
 
 
-        for (const item of inputs) {
 
-            const element =
-                document.getElementById(item.key);
+/* ========================================
+   AI LOADING
+======================================== */
 
-            const value =
-                element.value.trim();
+function showLoading() {
+
+    hideAllPages();
 
 
-            if (value === "") {
+    document.getElementById(
+        "loadingPage"
+    ).classList.remove(
+        "hidden"
+    );
 
-                result.innerHTML =
-                    "<span class='error'>Please fill all fields.</span>";
+
+    document.getElementById(
+        "loadingProgressBar"
+    ).style.width =
+        "15%";
+
+
+    document.getElementById(
+        "loadingText"
+    ).textContent =
+        "Validating patient health data...";
+
+
+    document.getElementById(
+        "step1"
+    ).className =
+        "loading-step-active";
+
+
+    document.getElementById(
+        "step2"
+    ).className =
+        "";
+
+
+    document.getElementById(
+        "step3"
+    ).className =
+        "";
+
+
+    setTimeout(function() {
+
+        document.getElementById(
+            "loadingProgressBar"
+        ).style.width =
+            "50%";
+
+
+        document.getElementById(
+            "loadingText"
+        ).textContent =
+            "Running trained AI model...";
+
+
+        document.getElementById(
+            "step1"
+        ).className =
+            "loading-step-complete";
+
+
+        document.getElementById(
+            "step2"
+        ).className =
+            "loading-step-active";
+
+    }, 500);
+
+
+    setTimeout(function() {
+
+        document.getElementById(
+            "loadingProgressBar"
+        ).style.width =
+            "80%";
+
+
+        document.getElementById(
+            "loadingText"
+        ).textContent =
+            "Generating prediction result...";
+
+
+        document.getElementById(
+            "step2"
+        ).className =
+            "loading-step-complete";
+
+
+        document.getElementById(
+            "step3"
+        ).className =
+            "loading-step-active";
+
+    }, 1000);
+
+}
+
+
+
+function completeLoading() {
+
+    document.getElementById(
+        "loadingProgressBar"
+    ).style.width =
+        "100%";
+
+
+    document.getElementById(
+        "step3"
+    ).className =
+        "loading-step-complete";
+
+
+    document.getElementById(
+        "loadingText"
+    ).textContent =
+        "Analysis complete!";
+
+}
+
+
+
+/* ========================================
+   PREDICTION
+======================================== */
+
+async function predictDisease() {
+
+
+    const name =
+        document.getElementById(
+            "patientName"
+        ).value.trim();
+
+
+    const age =
+        document.getElementById(
+            "patientAge"
+        ).value;
+
+
+    const sex =
+        document.getElementById(
+            "patientSex"
+        ).value;
+
+
+    if (
+        !name ||
+        !age ||
+        !sex
+    ) {
+
+
+        alert(
+            "Please complete patient information."
+        );
+
+
+        return;
+
+    }
+
+
+    const patientData = {};
+
+
+    /* ========================================
+       DIABETES
+    ======================================== */
+
+    if (
+        currentDisease ===
+        "diabetes"
+    ) {
+
+
+        if (
+            sex ===
+            "female"
+        ) {
+
+
+            const pregnancies =
+                document.getElementById(
+                    "Pregnancies"
+                ).value;
+
+
+            if (
+                pregnancies === ""
+            ) {
+
+
+                alert(
+                    "Please enter number of pregnancies."
+                );
+
 
                 return;
 
             }
 
 
-            patientData[item.key] =
-                Number(value);
+            patientData.Pregnancies =
+                Number(
+                    pregnancies
+                );
 
         }
+
+
+        else {
+
+
+            patientData.Pregnancies =
+                0;
+
+        }
+
+
+        patientData.Age =
+            Number(
+                age
+            );
 
     }
 
 
+    /* ========================================
+       HEART DISEASE
+    ======================================== */
+
+    if (
+        currentDisease ===
+        "heart_disease"
+    ) {
+
+
+        patientData.age =
+            Number(
+                age
+            );
+
+
+        patientData.sex =
+
+            sex === "male"
+
+            ?
+
+            1
+
+            :
+
+            0;
+
+    }
+
+
+    /* ========================================
+       COLLECT FEATURES
+    ======================================== */
+
+    for (
+
+        const field
+
+        of
+
+        diseaseFields[
+            currentDisease
+        ]
+
+    ) {
+
+
+        const element =
+            document.getElementById(
+                field.key
+            );
+
+
+        if (!element) {
+
+            alert(
+                `Missing form field: ${field.key}`
+            );
+
+            return;
+
+        }
+
+
+        const value =
+            element.value;
+
+
+        if (
+            value === ""
+        ) {
+
+
+            alert(
+                `Please enter ${field.label}`
+            );
+
+
+            return;
+
+        }
+
+
+        patientData[
+            field.key
+        ] =
+            Number(
+                value
+            );
+
+    }
+
+
+    /* ========================================
+       SHOW LOADING
+    ======================================== */
+
+    showLoading();
+
+
+    /* ========================================
+       SEND TO BACKEND
+    ======================================== */
+
     try {
-
-        button.disabled = true;
-
-        button.textContent =
-            "Analysing...";
-
-        result.innerHTML =
-            "Connecting to QuantumMedAI model...";
 
 
         const response =
             await fetch(
+
                 `${API_URL}/predict-disease/${currentDisease}`,
+
                 {
-                    method: "POST",
+
+                    method:
+                        "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
-                        JSON.stringify(patientData)
+                        JSON.stringify(
+                            patientData
+                        )
+
                 }
+
             );
 
 
-        const data =
+        const result =
             await response.json();
 
 
-        if (!response.ok || data.error) {
+        if (
+            !response.ok
+        ) {
+
 
             throw new Error(
-                data.error ||
-                "Analysis failed"
+
+                result.detail
+
+                ||
+
+                result.error
+
+                ||
+
+                "Prediction failed."
+
             );
 
         }
 
 
-        result.innerHTML =
-            "<span class='success'><strong>Analysis Complete</strong></span><br><br>" +
-            "<pre>" +
-            JSON.stringify(
-                data,
-                null,
-                2
-            ) +
-            "</pre>";
+        if (
+            result.error
+        ) {
 
 
-    } catch (error) {
+            throw new Error(
+                result.error
+            );
 
-        result.innerHTML =
-            "<span class='error'><strong>Error:</strong> " +
-            error.message +
-            "</span>";
+        }
 
-    } finally {
 
-        button.disabled = false;
+        completeLoading();
 
-        button.textContent =
-            "Analyse";
+
+        await new Promise(
+
+            resolve =>
+                setTimeout(
+                    resolve,
+                    700
+                )
+
+        );
+
+
+        displayResult(
+
+            currentDisease,
+
+            result,
+
+            {
+
+                name:
+                    name,
+
+                age:
+                    age,
+
+                sex:
+                    sex
+
+            },
+
+            patientData
+
+        );
 
     }
+
+
+    catch (
+        error
+    ) {
+
+
+        hideAllPages();
+
+
+        document.getElementById(
+            "formPage"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        alert(
+
+            "QuantumMedAI prediction error:\n\n"
+
+            +
+
+            error.message
+
+        );
+
+    }
+
+}
+
+
+
+/* ========================================
+   HISTORY
+======================================== */
+
+function savePredictionHistory(
+
+    disease,
+    result,
+    patientInfo,
+    assessment,
+    confidence
+
+) {
+
+
+    let history =
+
+        JSON.parse(
+
+            localStorage.getItem(
+                "quantumMedAIHistory"
+            )
+
+        )
+
+        ||
+
+        [];
+
+
+    const record = {
+
+        name:
+            patientInfo.name,
+
+        age:
+            patientInfo.age,
+
+        sex:
+            patientInfo.sex,
+
+        disease:
+            result.disease || disease,
+
+        diseaseId:
+            disease,
+
+        prediction:
+            result.prediction,
+
+        assessment:
+            assessment,
+
+        confidence:
+            confidence,
+
+        date:
+            new Date().toLocaleString()
+
+    };
+
+
+    history.unshift(
+        record
+    );
+
+
+    localStorage.setItem(
+
+        "quantumMedAIHistory",
+
+        JSON.stringify(
+            history
+        )
+
+    );
+
+}
+
+
+
+function showHistory() {
+
+
+    hideAllPages();
+
+
+    document.getElementById(
+        "historyPage"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    const history =
+
+        JSON.parse(
+
+            localStorage.getItem(
+                "quantumMedAIHistory"
+            )
+
+        )
+
+        ||
+
+        [];
+
+
+    const historyList =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    if (
+        history.length === 0
+    ) {
+
+
+        historyList.innerHTML = `
+
+        <div
+            style="
+            text-align:center;
+            padding:50px 20px;
+            color:#64748b;
+            "
+        >
+
+        <div style="font-size:55px;">
+        📭
+        </div>
+
+
+        <h3>
+        No Prediction History Yet
+        </h3>
+
+
+        <p>
+        Complete an AI analysis and it will appear here.
+        </p>
+
+        </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    historyList.innerHTML = "";
+
+
+    history.forEach(
+
+        function(
+            record,
+            index
+        ) {
+
+
+            const icon =
+
+                record.diseaseId ===
+                "diabetes"
+
+                ?
+
+                "🩸"
+
+                :
+
+                record.diseaseId ===
+                "heart_disease"
+
+                ?
+
+                "❤️"
+
+                :
+
+                "🧬";
+
+
+            historyList.innerHTML += `
+
+            <div
+                style="
+                margin-top:20px;
+                padding:20px;
+                background:#f8fafc;
+                border:1px solid #e2e8f0;
+                border-radius:12px;
+                "
+            >
+
+            <div
+                style="
+                display:flex;
+                justify-content:space-between;
+                gap:15px;
+                flex-wrap:wrap;
+                "
+            >
+
+            <h3 style="margin:0;">
+
+            ${icon}
+
+            ${record.disease}
+
+            </h3>
+
+
+            <span
+                style="color:#64748b;"
+            >
+
+            ${record.date}
+
+            </span>
+
+            </div>
+
+
+            <hr
+                style="
+                border:none;
+                border-top:1px solid #e2e8f0;
+                margin:15px 0;
+                "
+            >
+
+
+            <p>
+
+            <strong>
+            Patient:
+            </strong>
+
+            ${record.name}
+
+            </p>
+
+
+            <p>
+
+            <strong>
+            Age:
+            </strong>
+
+            ${record.age} Years
+
+            |
+
+            <strong>
+            Sex:
+            </strong>
+
+            ${record.sex}
+
+            </p>
+
+
+            <p>
+
+            <strong>
+            AI Prediction:
+            </strong>
+
+            ${record.assessment}
+
+            </p>
+
+
+            <p>
+
+            <strong>
+            Model Confidence:
+            </strong>
+
+
+            <span
+                style="
+                color:#2563eb;
+                font-weight:bold;
+                "
+            >
+
+            ${record.confidence}
+
+            </span>
+
+            </p>
+
+
+            <button
+                class="back-button"
+                style="
+                margin:10px 0 0 0;
+                background:#dc2626;
+                "
+                onclick="deleteHistoryItem(${index})"
+                type="button"
+            >
+
+            Delete Record
+
+            </button>
+
+
+            </div>
+
+            `;
+
+        }
+
+    );
+
+}
+
+
+
+function deleteHistoryItem(index) {
+
+
+    let history =
+
+        JSON.parse(
+
+            localStorage.getItem(
+                "quantumMedAIHistory"
+            )
+
+        )
+
+        ||
+
+        [];
+
+
+    history.splice(
+        index,
+        1
+    );
+
+
+    localStorage.setItem(
+
+        "quantumMedAIHistory",
+
+        JSON.stringify(
+            history
+        )
+
+    );
+
+
+    showHistory();
+
+}
+
+
+
+function clearHistory() {
+
+
+    const confirmation =
+
+        confirm(
+
+            "Are you sure you want to delete all prediction history?"
+
+        );
+
+
+    if (
+        !confirmation
+    ) {
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+        "quantumMedAIHistory"
+    );
+
+
+    showHistory();
+
+}
+
+
+
+/* ========================================
+   DISPLAY RESULT
+======================================== */
+
+function displayResult(
+
+    disease,
+    result,
+    patientInfo,
+    patientData
+
+) {
+
+
+    hideAllPages();
+
+
+    document.getElementById(
+        "resultPage"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    let class0Label;
+
+    let class1Label;
+
+    let modelName;
+
+
+    if (
+        disease ===
+        "diabetes"
+    ) {
+
+
+        class0Label =
+            "No Diabetes Pattern Detected";
+
+
+        class1Label =
+            "Diabetes Pattern Detected";
+
+
+        modelName =
+            "Random Forest";
+
+    }
+
+
+    else if (
+        disease ===
+        "heart_disease"
+    ) {
+
+
+        class0Label =
+            "No Heart Disease Pattern Detected";
+
+
+        class1Label =
+            "Heart Disease Pattern Detected";
+
+
+        modelName =
+            "Random Forest";
+
+    }
+
+
+    else {
+
+
+        class0Label =
+            "Malignant Pattern Detected";
+
+
+        class1Label =
+            "Benign Pattern Detected";
+
+
+        modelName =
+            "Support Vector Machine";
+
+    }
+
+
+    const prediction =
+        Number(
+            result.prediction
+        );
+
+
+    const assessment =
+
+        prediction === 0
+
+        ?
+
+        class0Label
+
+        :
+
+        class1Label;
+
+
+    const probabilities =
+        result.probabilities;
+
+
+    let probability0 = null;
+
+    let probability1 = null;
+
+
+    if (
+        Array.isArray(
+            probabilities
+        )
+    ) {
+
+
+        if (
+            probabilities.length >= 2
+        ) {
+
+            probability0 =
+                Number(
+                    probabilities[0]
+                );
+
+            probability1 =
+                Number(
+                    probabilities[1]
+                );
+
+        }
+
+    }
+
+
+    let confidence =
+        "Not Available";
+
+
+    if (
+        probability0 !== null
+        &&
+        probability1 !== null
+        &&
+        !Number.isNaN(
+            probability0
+        )
+        &&
+        !Number.isNaN(
+            probability1
+        )
+    ) {
+
+
+        confidence =
+
+            prediction === 0
+
+            ?
+
+            probability0 + "%"
+
+            :
+
+            probability1 + "%";
+
+    }
+
+
+    /* SAVE HISTORY */
+
+    savePredictionHistory(
+
+        disease,
+
+        result,
+
+        patientInfo,
+
+        assessment,
+
+        confidence
+
+    );
+
+
+    let probabilityHTML =
+        "";
+
+
+    if (
+        probability0 !== null
+        &&
+        probability1 !== null
+    ) {
+
+
+        probabilityHTML = `
+
+        <h3 class="section-title">
+
+        Model Probability Distribution
+
+        </h3>
+
+
+        <div class="probability-item">
+
+        <div class="probability-header">
+
+        <span>
+        ${class0Label}
+        </span>
+
+        <strong>
+        ${probability0}%
+        </strong>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            style="
+            width:${probability0}%
+            "
+        ></div>
+
+        </div>
+
+        </div>
+
+
+        <div class="probability-item">
+
+        <div class="probability-header">
+
+        <span>
+        ${class1Label}
+        </span>
+
+        <strong>
+        ${probability1}%
+        </strong>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            style="
+            width:${probability1}%
+            "
+        ></div>
+
+        </div>
+
+        </div>
+
+        `;
+
+    }
+
+
+    let inputHTML =
+        "";
+
+
+    for (
+
+        const [
+            field,
+            value
+        ]
+
+        of
+
+        Object.entries(
+            patientData
+        )
+
+    ) {
+
+
+        inputHTML += `
+
+        <div class="input-item">
+
+        <strong>
+
+        ${field}
+
+        </strong>
+
+        <br><br>
+
+        ${value}
+
+        </div>
+
+        `;
+
+    }
+
+
+    const formattedSex =
+
+        patientInfo.sex
+        .charAt(0)
+        .toUpperCase()
+
+        +
+
+        patientInfo.sex
+        .slice(1);
+
+
+    document.getElementById(
+        "resultContent"
+    ).innerHTML = `
+
+
+    <div style="text-align:center">
+
+
+    <div style="font-size:60px">
+
+    ${diseaseInfo[disease].icon}
+
+    </div>
+
+
+    <h2>
+
+    AI PREDICTION RESULT
+
+    </h2>
+
+
+    </div>
+
+
+
+    <h3 class="section-title">
+
+    Patient Information
+
+    </h3>
+
+
+    <div class="input-summary">
+
+
+    <div class="input-item">
+
+    <strong>
+
+    Name
+
+    </strong>
+
+    <br><br>
+
+    ${patientInfo.name}
+
+    </div>
+
+
+    <div class="input-item">
+
+    <strong>
+
+    Age
+
+    </strong>
+
+    <br><br>
+
+    ${patientInfo.age} Years
+
+    </div>
+
+
+    <div class="input-item">
+
+    <strong>
+
+    Sex
+
+    </strong>
+
+    <br><br>
+
+    ${formattedSex}
+
+    </div>
+
+
+    <div class="input-item">
+
+    <strong>
+
+    Disease Analyzed
+
+    </strong>
+
+    <br><br>
+
+    ${result.disease || disease}
+
+    </div>
+
+
+    </div>
+
+
+    <div class="assessment">
+
+
+    <h3>
+
+    Overall Model Prediction
+
+    </h3>
+
+
+    <div class="risk-text">
+
+    ${assessment}
+
+    </div>
+
+
+    </div>
+
+
+    <div class="confidence-box">
+
+
+    <h3>
+
+    Model Confidence
+
+    </h3>
+
+
+    <div class="confidence-value">
+
+    ${confidence}
+
+    </div>
+
+
+    </div>
+
+
+    ${probabilityHTML}
+
+
+    <h3 class="section-title">
+
+    AI Model Used
+
+    </h3>
+
+
+    <div class="model-box">
+
+
+    <strong>
+
+    ${modelName}
+
+    </strong>
+
+
+    <br><br>
+
+
+    Prediction Class:
+
+    ${prediction}
+
+
+    </div>
+
+
+    <h3 class="section-title">
+
+    Input Data Used for AI Analysis
+
+    </h3>
+
+
+    <div class="input-summary">
+
+
+    ${inputHTML}
+
+
+    </div>
+
+
+    <div class="disclaimer">
+
+
+    <strong>
+
+    ⚠ Important Disclaimer
+
+    </strong>
+
+
+    <br><br>
+
+
+    This AI-generated result is intended
+    for educational and decision-support
+    purposes only. It is not a medical
+    diagnosis and should not replace
+    consultation with a qualified
+    healthcare professional.
+
+
+    </div>
+
+
+    `;
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
 
 }
 
 </script>
 
 </body>
+
 </html>
