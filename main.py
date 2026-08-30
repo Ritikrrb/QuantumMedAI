@@ -233,6 +233,28 @@ def dataset_info():
 
 
 # ============================================================
+# BREAST CANCER TEST SAMPLE
+# ============================================================
+
+@app.get("/breast-cancer/test-sample")
+def breast_cancer_test_sample():
+
+    sample = data.data[0]
+    target = int(data.target[0])
+
+    return {
+        "sample_number": 1,
+        "features": [
+            float(value)
+            for value in sample
+        ],
+        "target": target,
+        "target_name": data.target_names[target],
+        "feature_names": list(data.feature_names)
+    }
+
+
+# ============================================================
 # MODEL PERFORMANCE
 # ============================================================
 
