@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QuantumMedAI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #0b1020;
+            color: white;
+        }
+
+        header {
+            padding: 22px 7%;
+            background: #111936;
+            border-bottom: 1px solid #26345f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: #6ea8ff;
+        }
+
+        header span {
+            color: #97a6c7;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: auto;
+            padding: 45px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h2 {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #b8c4df;
+            font-size: 18px;
+        }
+
+        .disease-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #151f3d;
+            padding: 30px;
+            border-radius: 18px;
+            border: 1px solid #293a68;
+            text-align: center;
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 23px;
+        }
+
+        .card p {
+            color: #aebbd6;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        button {
+            background: #4c8dff;
+            color: white;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #2f75e8;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #analysisPage {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .back-button {
+            width: auto;
+            margin-bottom: 25px;
+            background: #2a3557;
+        }
+
+        .analysis-card {
+            background: #151f3d;
+            padding: 30px;
+            border-radius: 18px;
+            border: 1px solid #293a68;
+        }
+
+        .analysis-card h2 {
+            margin-bottom: 15px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border-radius: 8px;
+            border: 1px solid #44527a;
+            background: #0d142b;
+            color: white;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #0d142b;
+            min-height: 80px;
+        }
+
+        .error {
+            color: #ff8a8a;
+        }
+
+        .success {
+            color: #8affbd;
+        }
+
+        footer {
+            text-align: center;
+            color: #71809f;
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="homePage">
+
+    <header>
+        <h1>QuantumMedAI</h1>
+        <span>AI Disease Analysis Platform</span>
+    </header>
+
+    <main>
+
+        <section class="hero">
+            <h2>AI-Powered Medical Disease Analysis</h2>
+            <p>Select a disease and enter patient data for machine-learning-based analysis.</p>
+        </section>
+
+        <section class="disease-grid">
+
+            <div class="card">
+                <h3>🩺 Diabetes</h3>
+                <p>Analyze diabetes risk using the trained machine learning model.</p>
+                <button onclick="openDisease('diabetes')">
+                    Analyse Diabetes
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>❤️ Heart Disease</h3>
+                <p>Analyze heart disease risk using patient medical information.</p>
+                <button onclick="openDisease('heart_disease')">
+                    Analyse Heart Disease
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>🎗️ Breast Cancer</h3>
+                <p>Analyze breast cancer data using the QuantumMedAI model.</p>
+                <button onclick="openDisease('breast_cancer')">
+                    Analyse Breast Cancer
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        QuantumMedAI • AI-assisted medical analysis • Educational use only
+    </footer>
+
+</div>
+
+
+<div id="analysisPage" class="hidden">
+
+    <button class="back-button" onclick="goHome()">
+        ← Back
+    </button>
+
+    <div class="analysis-card">
+
+        <h2 id="diseaseTitle">Disease Analysis</h2>
+
+        <p id="instruction">
+            Enter patient information.
+        </p>
+
+        <div id="inputContainer" class="input-grid"></div>
+
+        <button onclick="analyseDisease()" id="analyseButton">
+            Analyse
+        </button>
+
+        <div id="result" class="result">
+            Select a disease and enter the required information.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL = "https://quantummedai-6.onrender.com";
+
+let currentDisease = null;
+
+
+const diseaseInputs = {
+
+    diabetes: [
+        {name: "Pregnancies", key: "Pregnancies"},
+        {name: "Glucose", key: "Glucose"},
+        {name: "Blood Pressure", key: "BloodPressure"},
+        {name: "Skin Thickness", key: "SkinThickness"},
+        {name: "Insulin", key: "Insulin"},
+        {name: "BMI", key: "BMI"},
+        {name: "Diabetes Pedigree Function", key: "DiabetesPedigreeFunction"},
+        {name: "Age", key: "Age"}
+    ],
+
+    heart_disease: [
+        {name: "Age", key: "age"},
+        {name: "Sex (0 Female / 1 Male)", key: "sex"},
+        {name: "Chest Pain Type", key: "cp"},
+        {name: "Resting Blood Pressure", key: "trestbps"},
+        {name: "Cholesterol", key: "chol"},
+        {name: "Fasting Blood Sugar", key: "fbs"},
+        {name: "Resting ECG", key: "restecg"},
+        {name: "Maximum Heart Rate", key: "thalach"},
+        {name: "Exercise Induced Angina", key: "exang"},
+        {name: "Oldpeak", key: "oldpeak"},
+        {name: "Slope", key: "slope"},
+        {name: "CA", key: "ca"},
+        {name: "Thal", key: "thal"}
+    ],
+
+    breast_cancer: [
+        {name: "Enter 30 medical features", key: "features"}
+    ]
+};
+
+
+function openDisease(disease) {
+
+    currentDisease = disease;
+
+    document.getElementById("homePage").classList.add("hidden");
+
+    document.getElementById("analysisPage").classList.remove("hidden");
+
+    document.getElementById("diseaseTitle").textContent =
+        disease.replace("_", " ").toUpperCase() + " ANALYSIS";
+
+    const container =
+        document.getElementById("inputContainer");
+
+    container.innerHTML = "";
+
+    document.getElementById("result").innerHTML =
+        "Enter patient data and click Analyse.";
+
+    if (disease === "breast_cancer") {
+
+        document.getElementById("instruction").textContent =
+            "Enter 30 numerical medical features separated by commas.";
+
+        const input = document.createElement("input");
+
+        input.id = "features";
+
+        input.placeholder =
+            "Example: 17.99,10.38,122.8,...";
+
+        input.style.gridColumn = "1 / -1";
+
+        container.appendChild(input);
+
+    } else {
+
+        document.getElementById("instruction").textContent =
+            "Enter all patient medical values.";
+
+        diseaseInputs[disease].forEach(function(item) {
+
+            const input =
+                document.createElement("input");
+
+            input.type = "number";
+
+            input.step = "any";
+
+            input.id = item.key;
+
+            input.placeholder = item.name;
+
+            container.appendChild(input);
+
+        });
+
+    }
+
+}
+
+
+function goHome() {
+
+    currentDisease = null;
+
+    document.getElementById("analysisPage")
+        .classList.add("hidden");
+
+    document.getElementById("homePage")
+        .classList.remove("hidden");
+
+}
+
+
+async function analyseDisease() {
+
+    const result =
+        document.getElementById("result");
+
+    const button =
+        document.getElementById("analyseButton");
+
+    if (!currentDisease) {
+
+        result.innerHTML =
+            "<span class='error'>Please select a disease first.</span>";
+
+        return;
+
+    }
+
+
+    let patientData = {};
+
+
+    if (currentDisease === "breast_cancer") {
+
+        const text =
+            document.getElementById("features").value.trim();
+
+        const features =
+            text
+            .split(",")
+            .map(value => Number(value.trim()))
+            .filter(value => !Number.isNaN(value));
+
+
+        if (features.length !== 30) {
+
+            result.innerHTML =
+                "<span class='error'>Please enter exactly 30 valid numerical values.</span>";
+
+            return;
+
+        }
+
+        patientData.features = features;
+
+    } else {
+
+        const inputs =
+            diseaseInputs[currentDisease];
+
+
+        for (const item of inputs) {
+
+            const element =
+                document.getElementById(item.key);
+
+            const value =
+                element.value.trim();
+
+
+            if (value === "") {
+
+                result.innerHTML =
+                    "<span class='error'>Please fill all fields.</span>";
+
+                return;
+
+            }
+
+
+            patientData[item.key] =
+                Number(value);
+
+        }
+
+    }
+
+
+    try {
+
+        button.disabled = true;
+
+        button.textContent =
+            "Analysing...";
+
+        result.innerHTML =
+            "Connecting to QuantumMedAI model...";
+
+
+        const response =
+            await fetch(
+                `${API_URL}/predict-disease/${currentDisease}`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(patientData)
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || data.error) {
+
+            throw new Error(
+                data.error ||
+                "Analysis failed"
+            );
+
+        }
+
+
+        result.innerHTML =
+            "<span class='success'><strong>Analysis Complete</strong></span><br><br>" +
+            "<pre>" +
+            JSON.stringify(
+                data,
+                null,
+                2
+            ) +
+            "</pre>";
+
+
+    } catch (error) {
+
+        result.innerHTML =
+            "<span class='error'><strong>Error:</strong> " +
+            error.message +
+            "</span>";
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            "Analyse";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
